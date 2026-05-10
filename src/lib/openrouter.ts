@@ -9,7 +9,7 @@ export type ORModel = {
   pricing?: { prompt?: string; completion?: string };
 };
 
-export type Variant = { label: string; string: string };
+export type Variant = { label: string; platform?: string; string: string };
 export type GenerateResult = {
   variants: Variant[];
   rationale: string;
@@ -45,7 +45,7 @@ export async function generateBoolean(opts: {
   apiKey: string;
   model: string;
   jd: string;
-  platform: Platform;
+  platforms: Platform[];
   signal?: AbortSignal;
 }): Promise<GenerateResult> {
   const res = await fetch(`${BASE}/chat/completions`, {
@@ -60,7 +60,7 @@ export async function generateBoolean(opts: {
       model: opts.model,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt(opts.jd, opts.platform) },
+        { role: "user", content: userPrompt(opts.jd, opts.platforms) },
       ],
       response_format: { type: "json_object" },
       temperature: 0.4,
