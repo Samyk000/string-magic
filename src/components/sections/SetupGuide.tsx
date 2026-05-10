@@ -7,74 +7,64 @@ const STEPS = [
   {
     n: "01",
     title: "Create a free OpenRouter account",
-    body: "OpenRouter is the model gateway we use. Sign up takes 30 seconds — no credit card needed for free models.",
     href: "https://openrouter.ai",
-    cta: "Open openrouter.ai",
+    cta: "openrouter.ai",
   },
   {
     n: "02",
-    title: "Generate an API key",
-    body: "Visit your Keys page and create a new key. Copy the value starting with sk-or-v1-...",
+    title: "Generate an API key (sk-or-v1-…)",
     href: "https://openrouter.ai/keys",
-    cta: "Open Keys page",
+    cta: "Keys page",
   },
   {
     n: "03",
-    title: "Paste it into String Magic",
-    body: "Click 'Set API key' in the header and paste it in. It is saved only in your browser's localStorage.",
+    title: "Paste it in — saved only in your browser.",
   },
 ];
 
 export function SetupGuide({ onOpenKey }: Props) {
   return (
-    <section id="setup" className="reveal mx-auto max-w-7xl px-4 pt-32 md:px-8">
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.4fr]">
-        <div>
-          <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-            Setup
+    <section
+      id="setup"
+      className="reveal mx-auto mt-20 max-w-3xl px-4"
+    >
+      <div className="rounded-3xl border border-border bg-surface/60 p-6 backdrop-blur md:p-8">
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              Setup
+            </div>
+            <h2 className="mt-1 text-xl font-semibold tracking-tight md:text-2xl">
+              New to OpenRouter? One minute.
+            </h2>
           </div>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight md:text-4xl">
-            New to OpenRouter? It takes a minute.
-          </h2>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            String Magic uses your own OpenRouter account so you stay in
-            control of cost, rate limits and model choice. We only ever surface
-            free-tier models in the picker.
-          </p>
-          <Button
-            onClick={onOpenKey}
-            className="mt-6 rounded-2xl"
-            size="lg"
-          >
+          <Button onClick={onOpenKey} className="rounded-xl">
             <KeyRound className="mr-2 h-4 w-4" />
             Add your API key
           </Button>
         </div>
 
-        <ol className="space-y-3">
+        <ol className="mt-6 space-y-2">
           {STEPS.map((s) => (
             <li
               key={s.n}
-              className="card-elevate flex items-start gap-4 rounded-2xl border border-border bg-surface p-5"
+              className="flex items-center gap-3 rounded-xl border border-border bg-surface px-4 py-3 text-sm"
             >
-              <div className="font-mono text-2xl font-semibold text-muted-foreground/70">
+              <span className="font-mono text-xs text-muted-foreground">
                 {s.n}
-              </div>
-              <div className="flex-1">
-                <div className="font-semibold">{s.title}</div>
-                <p className="mt-1 text-sm text-muted-foreground">{s.body}</p>
-                {s.href && (
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-foreground underline-offset-2 hover:underline"
-                  >
-                    {s.cta}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                )}
-              </div>
+              </span>
+              <span className="flex-1">{s.title}</span>
+              {s.href && (
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-xs font-medium text-foreground underline-offset-2 hover:underline"
+                >
+                  {s.cta}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
             </li>
           ))}
         </ol>

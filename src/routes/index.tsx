@@ -3,11 +3,9 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { StructuralBackground } from "@/components/layout/StructuralBackground";
-import { Hero } from "@/components/sections/Hero";
+import { GeneratorPanel } from "@/components/generator/GeneratorPanel";
 import { HowItWorks } from "@/components/sections/HowItWorks";
-import { Features } from "@/components/sections/Features";
 import { SetupGuide } from "@/components/sections/SetupGuide";
-import { FinalCta } from "@/components/sections/FinalCta";
 import { storage } from "@/lib/storage";
 import { useReveal } from "@/lib/reveal";
 
@@ -20,11 +18,7 @@ function Index() {
   const [keyDialogOpen, setKeyDialogOpen] = useState(false);
 
   useEffect(() => {
-    const k = storage.getApiKey();
-    setApiKey(k);
-    if (!k) {
-      // Soft nudge: don't auto-open, keep first paint clean
-    }
+    setApiKey(storage.getApiKey());
   }, []);
 
   useReveal();
@@ -33,18 +27,38 @@ function Index() {
     <div className="relative min-h-screen">
       <StructuralBackground />
       <Header onOpenKey={() => setKeyDialogOpen(true)} hasKey={!!apiKey} />
-      <main className="pb-20">
-        <Hero
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-          keyDialogOpen={keyDialogOpen}
-          setKeyDialogOpen={setKeyDialogOpen}
-        />
+
+      <main className="pb-24">
+        {/* Centered dashboard */}
+        <section
+          id="top"
+          className="mx-auto w-full max-w-3xl px-4 pt-12 md:pt-20"
+        >
+          <div className="reveal mb-8 text-center">
+            <h1 className="text-3xl font-semibold tracking-tight md:text-5xl">
+              Boolean strings,{" "}
+              <span className="text-muted-foreground">in one click.</span>
+            </h1>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+              Paste a job description. Pick a platform. Get three calibrated
+              Boolean strings, ready to paste.
+            </p>
+          </div>
+
+          <div className="reveal">
+            <GeneratorPanel
+              apiKey={apiKey}
+              setApiKey={setApiKey}
+              keyDialogOpen={keyDialogOpen}
+              setKeyDialogOpen={setKeyDialogOpen}
+            />
+          </div>
+        </section>
+
         <HowItWorks />
-        <Features />
         <SetupGuide onOpenKey={() => setKeyDialogOpen(true)} />
-        <FinalCta />
       </main>
+
       <Footer />
     </div>
   );
