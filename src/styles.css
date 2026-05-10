@@ -193,10 +193,19 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+@keyframes shimmerBar {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes loadingDot {
+  0%, 80%, 100% { opacity: 0.2; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-1px); }
+}
 
 .animate-float { animation: floatY 9s ease-in-out infinite; }
 .animate-pulse-line { animation: pulseLine 4s ease-in-out infinite; }
 .animate-slow-spin { animation: slowSpin 60s linear infinite; }
+.loading-dot { display: inline-block; animation: loadingDot 1.2s ease-in-out infinite; }
 
 /* Card hover sharpen */
 .card-elevate {

@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { Check, Copy } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Check, Copy, Globe, Linkedin, Briefcase, Github, Search } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 type Props = {
   label: string;
   value: string;
-  accent?: "blue" | "violet" | "green";
+  platform?: string;
 };
 
-export function ResultCard({ label, value, accent = "blue" }: Props) {
-  const [copied, setCopied] = useState(false);
+const ICONS: Record<string, typeof Globe> = {
+  global: Globe,
+  linkedin: Linkedin,
+  indeed: Briefcase,
+  github: Github,
+  google: Search,
+};
 
-  const accentVar =
-    accent === "violet"
-      ? "var(--accent-violet)"
-      : accent === "green"
-        ? "var(--accent-green)"
-        : "var(--accent-blue)";
+export function ResultRow({ label, value, platform }: Props) {
+  const [copied, setCopied] = useState(false);
+  const Icon = (platform && ICONS[platform]) || Globe;
 
   const onCopy = async () => {
     try {
@@ -30,49 +32,42 @@ export function ResultCard({ label, value, accent = "blue" }: Props) {
     }
   };
 
-  const charCount = value.length;
-
   return (
-    <div className="card-elevate group relative overflow-hidden rounded-2xl border border-border bg-surface">
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{ background: accentVar, opacity: 0.5 }}
-      />
-      <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ background: accentVar }}
-          />
-          <span className="font-semibold">{label}</span>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            {charCount} chars
-          </span>
+    <div className="group grid grid-cols-[160px_1fr_auto] items-stretch border-b border-border last:border-0 hover:bg-surface-soft/50 transition-colors">
+      <div className="flex items-center gap-2 border-r border-border/60 px-4 py-3">
+        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-sm font-semibold">{label}</span>
+      </div>
+      <div className="min-w-0 px-4 py-3">
+        <pre className="result-scroll max-h-[160px] overflow-auto whitespace-pre-wrap break-all font-mono text-[12.5px] leading-relaxed text-foreground/90">
+          {value}
+        </pre>
+        <div className="mt-1.5 font-mono text-[10px] tabular-nums text-muted-foreground">
+          {value.length} chars
         </div>
-        <Button
-          variant="outline"
-          size="sm"
+      </div>
+      <div className="flex items-start px-3 py-3">
+        <button
+          type="button"
           onClick={onCopy}
-          className="h-8 rounded-lg"
           aria-live="polite"
+          className={cn(
+            "inline-flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-medium transition-colors",
+            copied
+              ? "border-[var(--accent-green)] text-[var(--accent-green)]"
+              : "border-border bg-surface text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+          )}
         >
           {copied ? (
             <>
-              <Check className="mr-1.5 h-3.5 w-3.5" /> Copied
+              <Check className="h-3.5 w-3.5" /> Copied
             </>
           ) : (
             <>
-              <Copy className="mr-1.5 h-3.5 w-3.5" /> Copy
+              <Copy className="h-3.5 w-3.5" /> Copy
             </>
           )}
-        </Button>
-      </div>
-      <div className="result-scroll max-h-[320px] overflow-auto p-4">
-        <pre
-          className="whitespace-pre-wrap break-all font-mono text-[12.5px] leading-relaxed text-foreground/90"
-        >
-          {value}
-        </pre>
+        </button>
       </div>
     </div>
   );

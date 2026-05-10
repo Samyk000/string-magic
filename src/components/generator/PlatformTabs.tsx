@@ -1,4 +1,4 @@
-import { Globe, Linkedin, Briefcase, Github, Search } from "lucide-react";
+import { Globe, Linkedin, Briefcase, Github, Search, Check } from "lucide-react";
 import type { Platform } from "@/lib/prompt";
 import { cn } from "@/lib/utils";
 
@@ -15,35 +15,44 @@ export function PlatformTabs({
   onChange,
   disabled,
 }: {
-  value: Platform;
-  onChange: (p: Platform) => void;
+  value: Platform[];
+  onChange: (p: Platform[]) => void;
   disabled?: boolean;
 }) {
+  const toggle = (id: Platform) => {
+    if (value.includes(id)) {
+      if (value.length === 1) return; // keep at least one
+      onChange(value.filter((p) => p !== id));
+    } else {
+      onChange([...value, id]);
+    }
+  };
+
   return (
-    <div
-      role="tablist"
-      aria-label="Target platform"
-      className="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-border bg-surface-soft p-1"
-    >
+    <div className="flex flex-wrap items-center gap-1.5">
       {ITEMS.map((it) => {
-        const active = it.id === value;
+        const active = value.includes(it.id);
         return (
           <button
             key={it.id}
             type="button"
-            role="tab"
-            aria-selected={active}
+            role="checkbox"
+            aria-checked={active}
             disabled={disabled}
-            onClick={() => onChange(it.id)}
+            onClick={() => toggle(it.id)}
             className={cn(
-              "group inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-all duration-200",
+              "group inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200",
               active
-                ? "bg-foreground text-background shadow-sm"
-                : "text-muted-foreground hover:bg-surface hover:text-foreground",
-              disabled && "opacity-60",
+                ? "border-foreground/80 bg-foreground text-background shadow-sm"
+                : "border-border bg-surface text-muted-foreground hover:border-foreground/30 hover:text-foreground",
+              disabled && "opacity-50",
             )}
           >
-            <it.icon className="h-3.5 w-3.5" />
+            {active ? (
+              <Check className="h-3 w-3" />
+            ) : (
+              <it.icon className="h-3 w-3" />
+            )}
             <span>{it.label}</span>
           </button>
         );

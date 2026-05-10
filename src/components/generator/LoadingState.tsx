@@ -8,16 +8,16 @@ const STEPS = [
 ];
 
 export function LoadingState() {
-  const [progress, setProgress] = useState(6);
+  const [progress, setProgress] = useState(8);
   const [stepIdx, setStepIdx] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setProgress((p) => (p < 92 ? p + Math.max(0.6, (96 - p) / 22) : p));
-    }, 120);
+      setProgress((p) => (p < 94 ? p + Math.max(0.5, (96 - p) / 22) : p));
+    }, 110);
     const stepId = setInterval(() => {
       setStepIdx((i) => (i + 1) % STEPS.length);
-    }, 1400);
+    }, 1300);
     return () => {
       clearInterval(id);
       clearInterval(stepId);
@@ -25,43 +25,41 @@ export function LoadingState() {
   }, []);
 
   return (
-    <div className="rounded-2xl border border-border bg-surface-soft p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="relative inline-flex h-2.5 w-2.5">
-            <span
-              className="absolute inset-0 animate-ping rounded-full opacity-60"
-              style={{ background: "var(--accent-blue)" }}
-            />
-            <span
-              className="relative inline-flex h-2.5 w-2.5 rounded-full"
-              style={{ background: "var(--accent-blue)" }}
-            />
+    <div className="rounded-xl border border-border bg-surface/70 px-4 py-3 backdrop-blur">
+      <div className="flex items-center gap-3">
+        <span className="relative inline-flex h-2 w-2 shrink-0">
+          <span
+            className="absolute inset-0 animate-ping rounded-full opacity-70"
+            style={{ background: "var(--accent-blue)" }}
+          />
+          <span
+            className="relative inline-flex h-2 w-2 rounded-full"
+            style={{ background: "var(--accent-blue)" }}
+          />
+        </span>
+        <span className="flex-1 truncate text-xs font-medium text-foreground/90">
+          {STEPS[stepIdx]}
+          <span className="ml-1 inline-flex">
+            <span className="loading-dot" style={{ animationDelay: "0ms" }}>.</span>
+            <span className="loading-dot" style={{ animationDelay: "180ms" }}>.</span>
+            <span className="loading-dot" style={{ animationDelay: "360ms" }}>.</span>
           </span>
-          <span className="text-sm font-medium">{STEPS[stepIdx]}…</span>
-        </div>
-        <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+        </span>
+        <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
           {Math.floor(progress)}%
         </span>
       </div>
-      <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-border/60">
+      <div className="mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-border/50">
         <div
           className="h-full rounded-full transition-[width] duration-200 ease-out"
           style={{
             width: `${progress}%`,
             background:
-              "linear-gradient(90deg, var(--accent-blue), var(--accent-violet))",
+              "linear-gradient(90deg, var(--accent-blue), var(--accent-violet), var(--accent-green))",
+            backgroundSize: "200% 100%",
+            animation: "shimmerBar 2.4s linear infinite",
           }}
         />
-      </div>
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="h-16 animate-pulse rounded-xl border border-border bg-surface"
-            style={{ animationDelay: `${i * 120}ms` }}
-          />
-        ))}
       </div>
     </div>
   );

@@ -1,38 +1,53 @@
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sparkles, KeyRound } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ModelSelect } from "@/components/generator/ModelSelect";
 
-type Props = { onOpenKey: () => void; hasKey: boolean };
+type Props = {
+  onOpenKey: () => void;
+  hasKey: boolean;
+  apiKey: string;
+  model: string;
+  onModel: (id: string) => void;
+};
 
-export function Header({ onOpenKey, hasKey }: Props) {
+export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-4">
-        <a href="#top" className="flex items-center gap-2">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface">
-            <Sparkles className="h-3.5 w-3.5" />
+    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/75 backdrop-blur-xl">
+      <div className="mx-auto flex h-12 max-w-3xl items-center justify-between gap-2 px-4">
+        <a href="#top" className="flex shrink-0 items-center gap-2">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-border bg-surface">
+            <Sparkles className="h-3 w-3" />
           </span>
           <span className="text-sm font-semibold tracking-tight">
             String Magic
           </span>
         </a>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+        <div className="flex min-w-0 items-center gap-1.5">
+          <ModelSelect
+            compact
+            apiKey={apiKey}
+            value={model}
+            onChange={onModel}
+          />
+          <button
+            type="button"
             onClick={onOpenKey}
-            className="h-8 rounded-lg text-xs"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground"
           >
-            <KeyRound className="mr-1.5 h-3.5 w-3.5" />
+            <KeyRound className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">
               {hasKey ? "API key" : "Set API key"}
             </span>
-            <span className="sm:hidden">Key</span>
             <span
-              className={`ml-2 inline-block h-1.5 w-1.5 rounded-full ${hasKey ? "bg-[var(--accent-green)]" : "bg-[var(--accent-amber)]"}`}
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{
+                background: hasKey
+                  ? "var(--accent-green)"
+                  : "var(--accent-amber)",
+              }}
             />
-          </Button>
+          </button>
           <ThemeToggle />
         </div>
       </div>
