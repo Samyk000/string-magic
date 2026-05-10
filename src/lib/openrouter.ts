@@ -1,4 +1,4 @@
-import { SYSTEM_PROMPT, userPrompt } from "./prompt";
+import { SYSTEM_PROMPT, userPrompt, type Platform } from "./prompt";
 
 const BASE = "https://openrouter.ai/api/v1";
 
@@ -45,6 +45,7 @@ export async function generateBoolean(opts: {
   apiKey: string;
   model: string;
   jd: string;
+  platform: Platform;
   signal?: AbortSignal;
 }): Promise<GenerateResult> {
   const res = await fetch(`${BASE}/chat/completions`, {
@@ -59,7 +60,7 @@ export async function generateBoolean(opts: {
       model: opts.model,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt(opts.jd) },
+        { role: "user", content: userPrompt(opts.jd, opts.platform) },
       ],
       response_format: { type: "json_object" },
       temperature: 0.4,

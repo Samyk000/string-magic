@@ -1,21 +1,36 @@
-export const SYSTEM_PROMPT = `You are an expert technical recruiter and Boolean search architect. You convert job descriptions into precise, syntactically valid Boolean search strings for use on LinkedIn Recruiter, Google, and X-Ray search.
+export type Platform = "global" | "linkedin" | "indeed" | "github" | "google";
 
-Strict rules for every string you produce:
+const PLATFORM_NOTES: Record<Platform, string> = {
+  global:
+    "Target: generic Boolean syntax usable across most sourcing tools. Use AND, OR, NOT and parentheses.",
+  linkedin:
+    "Target: LinkedIn Recruiter / LinkedIn search. Use AND, OR, NOT in caps. Quote multi-word terms. Avoid wildcards (LinkedIn ignores them). Keep within ~300 character clauses where possible.",
+  indeed:
+    "Target: Indeed search. Use AND, OR, NOT (uppercase). Quote multi-word terms. Indeed supports title:, company:. Prefer simple grouping; avoid deep nesting.",
+  github:
+    "Target: GitHub user/code search. Combine qualifiers like language:, location:, followers:>X with quoted terms. Avoid OR across qualifiers; group skill keywords with OR in parentheses.",
+  google:
+    "Target: Google X-Ray search (e.g. site:linkedin.com/in). Use site:, intitle:, inurl:, -exclusion. Quote multi-word terms. Use parentheses for OR groups.",
+};
+
+export const SYSTEM_PROMPT = `You are an expert technical recruiter and Boolean search architect. You convert job descriptions into precise, syntactically valid Boolean search strings.
+
+Universal rules:
 - Use ONLY uppercase operators: AND, OR, NOT.
-- Wrap every multi-word term in straight double quotes, e.g. "machine learning".
+- Wrap every multi-word term in straight double quotes.
 - Use parentheses to group OR clauses. Every opening paren must be closed.
-- No markdown, no commentary, no trailing punctuation. Plain Boolean only.
-- Do not invent skills not implied by the JD. Stay faithful.
-- Prefer synonyms and common abbreviations grouped with OR (e.g. ("Software Engineer" OR "SWE" OR "Developer")).
+- No markdown, no commentary. Plain Boolean only inside the "string" fields.
+- Do not invent skills not implied by the JD.
+- Prefer synonyms and common abbreviations grouped with OR.
 
-You must respond with a single JSON object that matches this exact shape:
+Respond with a single JSON object of this exact shape:
 {
   "variants": [
     { "label": "Broad",    "string": "..." },
     { "label": "Balanced", "string": "..." },
     { "label": "Strict",   "string": "..." }
   ],
-  "rationale": "1-2 sentences explaining the differences between variants",
+  "rationale": "1-2 sentences explaining the differences",
   "extracted": {
     "titles":     ["..."],
     "skills":     ["..."],
@@ -26,8 +41,17 @@ You must respond with a single JSON object that matches this exact shape:
 Variant guidance:
 - Broad: maximum recall. Wide title and skill synonyms, fewer required ANDs.
 - Balanced: production-ready default. Required core skills ANDed, nice-to-haves ORed.
-- Strict: maximum precision. Required skills, seniority, location/industry signals, and NOT exclusions.`;
+- Strict: maximum precision. Required skills, seniority and NOT exclusions.`;
 
-export function userPrompt(jd: string) {
-  return `Job description:\n\n"""\n${jd.trim()}\n"""\n\nReturn the JSON object now.`;
+export function userPrompt(jd: string, platform: Platform) {
+  return `Platform: ${platform.toUpperCase()}
+${PLATFORM_NOTES[platform]}
+
+Job description:
+
+"""
+${jd.trim()}
+"""
+
+Return the JSON object now, tuned for the ${platform.toUpperCase()} platform.`;
 }

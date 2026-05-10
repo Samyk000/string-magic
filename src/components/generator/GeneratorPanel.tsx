@@ -3,11 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, KeyRound } from "lucide-react";
 import { ApiKeyDialog } from "./ApiKeyDialog";
 import { ModelSelect } from "./ModelSelect";
-import { JobDescriptionInput } from "./JobDescriptionInput";
+import { PlatformTabs } from "./PlatformTabs";
+import { LoadingState } from "./LoadingState";
 import { ResultCard } from "./ResultCard";
 import { storage } from "@/lib/storage";
 import { generateBoolean, type GenerateResult } from "@/lib/openrouter";
+import type { Platform } from "@/lib/prompt";
 import { toast } from "sonner";
+
+const SAMPLE = `Senior Backend Engineer (Remote, US)
+
+We're hiring a Senior Backend Engineer to design and scale our payments platform. You'll own services in Go and Python, work with PostgreSQL and Kafka, and ship to AWS via Kubernetes.
+
+Requirements:
+- 5+ years building distributed systems in production
+- Strong with Go or Python; experience with gRPC and REST APIs
+- Deep PostgreSQL knowledge; comfortable with event streaming (Kafka)
+- AWS, Docker, Kubernetes
+- Bonus: fintech / payments experience (Stripe, Adyen)
+
+Not a fit: junior engineers, frontend-only backgrounds, agency-only experience.`;
 
 type Props = {
   apiKey: string;
@@ -23,9 +38,11 @@ export function GeneratorPanel({
   setKeyDialogOpen,
 }: Props) {
   const [model, setModel] = useState<string>("");
+  const [platform, setPlatform] = useState<Platform>("global");
   const [jd, setJd] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerateResult | null>(null);
+  const max = 8000;
 
   useEffect(() => {
     setModel(storage.getModelId());
@@ -53,9 +70,14 @@ export function GeneratorPanel({
     setLoading(true);
     setResult(null);
     try {
-      const r = await generateBoolean({ apiKey, model, jd });
+      const r = await generateBoolean({ apiKey, model, jd, platform });
       setResult(r);
       toast.success("Boolean strings ready");
+      setTimeout(() => {
+        document
+          .getElementById("results")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 60);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Generation failed");
     } finally {
@@ -79,65 +101,89 @@ export function GeneratorPanel({
         }}
       />
 
-      <div className="card-elevate shine relative overflow-hidden rounded-3xl border border-border bg-surface/80 p-5 backdrop-blur-xl md:p-6">
-        <div className="mb-5 flex items-center justify-between">
+      {/* Main dashboard card */}
+      <div className="card-elevate relative overflow-hidden rounded-3xl border border-border bg-surface/80 p-5 shadow-sm backdrop-blur-xl md:p-7">
+        {/* Top row: platform tabs + key/model */}
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <PlatformTabs value={platform} onChange={setPlatform} disabled={loading} />
           <div className="flex items-center gap-2">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-surface-soft">
-              <Sparkles className="h-3.5 w-3.5" />
-            </span>
-            <span className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-              Boolean Generator
-            </span>
-          </div>
-          {!apiKey && (
-            <button
-              onClick={() => setKeyDialogOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface-soft px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground"
-            >
-              <KeyRound className="h-3 w-3" /> Add key
-            </button>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="mb-2 block font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
-              Model · free only
-            </label>
-            <ModelSelect apiKey={apiKey} value={model} onChange={onModel} />
-          </div>
-
-          <JobDescriptionInput value={jd} onChange={setJd} disabled={loading} />
-
-          <Button
-            onClick={generate}
-            disabled={loading}
-            size="lg"
-            className="h-12 w-full rounded-2xl text-base font-semibold"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating…
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" /> Generate Boolean strings
-              </>
+            {!apiKey && (
+              <button
+                onClick={() => setKeyDialogOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface-soft px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <KeyRound className="h-3.5 w-3.5" /> Add API key
+              </button>
             )}
-          </Button>
+            <div className="min-w-[220px]">
+              <ModelSelect apiKey={apiKey} value={model} onChange={onModel} />
+            </div>
+          </div>
         </div>
+
+        {/* JD textarea */}
+        <div className="mt-5">
+          <textarea
+            value={jd}
+            onChange={(e) => setJd(e.target.value.slice(0, max))}
+            disabled={loading}
+            placeholder="Paste a job description here…"
+            rows={11}
+            className="w-full resize-y rounded-2xl border border-border bg-surface p-5 text-[15px] leading-relaxed text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none focus:ring-4 focus:ring-foreground/5 disabled:opacity-60"
+          />
+          <div className="mt-2 flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setJd(SAMPLE)}
+              disabled={loading}
+              className="text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50"
+            >
+              Try a sample JD
+            </button>
+            <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+              {jd.length} / {max}
+            </span>
+          </div>
+        </div>
+
+        {/* Generate */}
+        <Button
+          onClick={generate}
+          disabled={loading}
+          size="lg"
+          className="mt-4 h-12 w-full rounded-2xl text-base font-semibold transition-transform active:scale-[0.99]"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating…
+            </>
+          ) : (
+            <>
+              <Sparkles className="mr-2 h-4 w-4" /> Generate Boolean strings
+            </>
+          )}
+        </Button>
       </div>
 
-      {result && (
-        <div className="mt-6 space-y-4">
-          {result.rationale && (
-            <div className="rounded-2xl border border-border bg-surface-soft p-4 text-sm text-muted-foreground">
-              <div className="mb-1 font-mono text-[10px] uppercase tracking-widest">
-                Rationale
-              </div>
-              {result.rationale}
-            </div>
-          )}
+      {/* Loading + Results */}
+      {loading && (
+        <div className="mt-6 animate-fade-in">
+          <LoadingState />
+        </div>
+      )}
+
+      {result && !loading && (
+        <div id="results" className="mt-8 space-y-5 animate-fade-in">
+          <div className="flex items-center gap-2">
+            <span
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--accent-green)" }}
+            />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Results · {platform}
+            </span>
+          </div>
+
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {result.variants.map((v, i) => (
               <ResultCard
@@ -148,6 +194,16 @@ export function GeneratorPanel({
               />
             ))}
           </div>
+
+          {result.rationale && (
+            <div className="rounded-2xl border border-border bg-surface-soft p-4 text-sm leading-relaxed text-muted-foreground">
+              <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/70">
+                Rationale ·{" "}
+              </span>
+              {result.rationale}
+            </div>
+          )}
+
           {result.extracted && (
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {(["titles", "skills", "exclusions"] as const).map((k) => (
