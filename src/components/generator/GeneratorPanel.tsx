@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Sparkles, KeyRound } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { ApiKeyDialog } from "./ApiKeyDialog";
-import { ModelSelect } from "./ModelSelect";
 import { PlatformTabs } from "./PlatformTabs";
 import { LoadingState } from "./LoadingState";
-import { ResultCard } from "./ResultCard";
+import { ResultRow } from "./ResultCard";
 import { storage } from "@/lib/storage";
 import { generateBoolean, type GenerateResult } from "@/lib/openrouter";
 import type { Platform } from "@/lib/prompt";
@@ -29,6 +28,7 @@ type Props = {
   setApiKey: (k: string) => void;
   keyDialogOpen: boolean;
   setKeyDialogOpen: (v: boolean) => void;
+  model: string;
 };
 
 export function GeneratorPanel({
@@ -36,22 +36,13 @@ export function GeneratorPanel({
   setApiKey,
   keyDialogOpen,
   setKeyDialogOpen,
+  model,
 }: Props) {
-  const [model, setModel] = useState<string>("");
-  const [platform, setPlatform] = useState<Platform>("global");
+  const [platforms, setPlatforms] = useState<Platform[]>(["global"]);
   const [jd, setJd] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerateResult | null>(null);
   const max = 8000;
-
-  useEffect(() => {
-    setModel(storage.getModelId());
-  }, []);
-
-  const onModel = (id: string) => {
-    setModel(id);
-    storage.setModelId(id);
-  };
 
   const generate = async () => {
     if (!apiKey) {
@@ -60,7 +51,11 @@ export function GeneratorPanel({
       return;
     }
     if (!model) {
-      toast.error("Select a free model.");
+      toast.error("Select a free model in the header.");
+      return;
+    }
+    if (!platforms.length) {
+      toast.error("Pick at least one platform.");
       return;
     }
     if (jd.trim().length < 40) {
@@ -70,7 +65,7 @@ export function GeneratorPanel({
     setLoading(true);
     setResult(null);
     try {
-      const r = await generateBoolean({ apiKey, model, jd, platform });
+      const r = await generateBoolean({ apiKey, model, jd, platforms });
       setResult(r);
       toast.success("Boolean strings ready");
       setTimeout(() => {
@@ -101,102 +96,87 @@ export function GeneratorPanel({
         }}
       />
 
-      {/* Main dashboard card */}
-      <div className="card-elevate relative overflow-hidden rounded-3xl border border-border bg-surface/80 p-5 shadow-sm backdrop-blur-xl md:p-7">
-        {/* Top row: platform tabs + key/model */}
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <PlatformTabs value={platform} onChange={setPlatform} disabled={loading} />
-          <div className="flex items-center gap-2">
-            {!apiKey && (
-              <button
-                onClick={() => setKeyDialogOpen(true)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-surface-soft px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <KeyRound className="h-3.5 w-3.5" /> Add API key
-              </button>
-            )}
-            <div className="min-w-[220px]">
-              <ModelSelect apiKey={apiKey} value={model} onChange={onModel} />
-            </div>
-          </div>
-        </div>
-
-        {/* JD textarea */}
-        <div className="mt-5">
-          <textarea
-            value={jd}
-            onChange={(e) => setJd(e.target.value.slice(0, max))}
-            disabled={loading}
-            placeholder="Paste a job description here…"
-            rows={11}
-            className="w-full resize-y rounded-2xl border border-border bg-surface p-5 text-[15px] leading-relaxed text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none focus:ring-4 focus:ring-foreground/5 disabled:opacity-60"
-          />
-          <div className="mt-2 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setJd(SAMPLE)}
-              disabled={loading}
-              className="text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50"
-            >
-              Try a sample JD
-            </button>
-            <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
-              {jd.length} / {max}
-            </span>
-          </div>
-        </div>
-
-        {/* Generate */}
-        <Button
-          onClick={generate}
-          disabled={loading}
-          size="lg"
-          className="mt-4 h-12 w-full rounded-2xl text-base font-semibold transition-transform active:scale-[0.99]"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating…
-            </>
-          ) : (
-            <>
-              <Sparkles className="mr-2 h-4 w-4" /> Generate Boolean strings
-            </>
-          )}
-        </Button>
-      </div>
-
-      {/* Loading + Results */}
+      {/* Loading bar — sits ABOVE the generate area */}
       {loading && (
-        <div className="mt-6 animate-fade-in">
+        <div className="mb-3 animate-fade-in">
           <LoadingState />
         </div>
       )}
 
+      {/* Main dashboard card */}
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-surface/80 shadow-sm backdrop-blur-xl">
+        {/* JD textarea */}
+        <textarea
+          value={jd}
+          onChange={(e) => setJd(e.target.value.slice(0, max))}
+          disabled={loading}
+          placeholder="Paste a job description here…"
+          rows={10}
+          className="w-full resize-none border-0 bg-transparent p-5 text-[15px] leading-relaxed text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-0 disabled:opacity-60"
+        />
+
+        {/* Footer row: platforms + meta + generate */}
+        <div className="flex flex-col gap-3 border-t border-border/70 bg-surface-soft/60 p-3 md:flex-row md:items-center md:justify-between">
+          <PlatformTabs
+            value={platforms}
+            onChange={setPlatforms}
+            disabled={loading}
+          />
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 font-mono text-[10px] tabular-nums text-muted-foreground">
+              <button
+                type="button"
+                onClick={() => setJd(SAMPLE)}
+                disabled={loading}
+                className="text-foreground/70 underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50"
+              >
+                Try sample
+              </button>
+              <span className="opacity-40">·</span>
+              <span>
+                {jd.length}/{max}
+              </span>
+            </div>
+            <Button
+              onClick={generate}
+              disabled={loading}
+              className="h-9 rounded-lg px-4 text-sm font-semibold transition-transform active:scale-[0.98]"
+            >
+              <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+              {loading ? "Generating…" : "Generate"}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Results */}
       {result && !loading && (
-        <div id="results" className="mt-8 space-y-5 animate-fade-in">
-          <div className="flex items-center gap-2">
+        <div id="results" className="mt-6 animate-fade-in">
+          <div className="mb-3 flex items-center gap-2">
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"
               style={{ background: "var(--accent-green)" }}
             />
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-              Results · {platform}
+              Results · {result.variants.length} string
+              {result.variants.length === 1 ? "" : "s"}
             </span>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface">
             {result.variants.map((v, i) => (
-              <ResultCard
-                key={v.label + i}
+              <ResultRow
+                key={(v.platform ?? v.label) + i}
                 label={v.label}
                 value={v.string}
-                accent={i === 0 ? "blue" : i === 1 ? "violet" : "green"}
+                platform={v.platform}
               />
             ))}
           </div>
 
           {result.rationale && (
-            <div className="rounded-2xl border border-border bg-surface-soft p-4 text-sm leading-relaxed text-muted-foreground">
+            <div className="mt-3 rounded-xl border border-border bg-surface-soft p-3 text-xs leading-relaxed text-muted-foreground">
               <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/70">
                 Rationale ·{" "}
               </span>
@@ -205,20 +185,20 @@ export function GeneratorPanel({
           )}
 
           {result.extracted && (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            <div className="mt-3 grid grid-cols-1 gap-2 md:grid-cols-3">
               {(["titles", "skills", "exclusions"] as const).map((k) => (
                 <div
                   key={k}
-                  className="rounded-2xl border border-border bg-surface-soft p-4"
+                  className="rounded-xl border border-border bg-surface-soft p-3"
                 >
-                  <div className="mb-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <div className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                     {k}
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1">
                     {(result.extracted[k] ?? []).map((t) => (
                       <span
                         key={t}
-                        className="rounded-md border border-border bg-surface px-2 py-0.5 font-mono text-[11px]"
+                        className="rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[10.5px]"
                       >
                         {t}
                       </span>
