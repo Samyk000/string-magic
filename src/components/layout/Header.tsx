@@ -1,5 +1,5 @@
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sparkles, KeyRound } from "lucide-react";
-import { ModelSelect } from "@/components/generator/ModelSelect";
 
 type Props = {
   onOpenKey: () => void;
@@ -23,12 +23,6 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
         </a>
 
         <div className="flex min-w-0 items-center gap-1.5">
-          <ModelSelect
-            compact
-            apiKey={apiKey}
-            value={model}
-            onChange={onModel}
-          />
           <button
             type="button"
             onClick={onOpenKey}
@@ -43,6 +37,7 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
               {hasKey ? "Free API key" : "Set Free API key"}
             </span>
           </button>
+          <ThemeToggle />
         </div>
       </div>
     </header>

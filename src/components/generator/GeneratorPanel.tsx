@@ -24,6 +24,7 @@ type Props = {
   keyDialogOpen: boolean;
   setKeyDialogOpen: (v: boolean) => void;
   model: string;
+  onModel: (id: string) => void;
 };
 
 export function GeneratorPanel({
@@ -32,6 +33,7 @@ export function GeneratorPanel({
   keyDialogOpen,
   setKeyDialogOpen,
   model,
+  onModel,
 }: Props) {
   const [jd, setJd] = useState("");
   const [loading, setLoading] = useState(false);
@@ -109,7 +111,7 @@ export function GeneratorPanel({
   const showResults = !!result && !loading;
 
   return (
-    <div id="generator" className={cn("relative", !showResults && "grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-16 items-start")}>
+    <div id="generator" className={cn("relative", !showResults && "flex flex-col gap-10 lg:gap-14 items-center max-w-4xl mx-auto")}>
       <ApiKeyDialog
         open={keyDialogOpen}
         onOpenChange={setKeyDialogOpen}
@@ -122,18 +124,20 @@ export function GeneratorPanel({
           storage.clearApiKey();
           setApiKey("");
         }}
+        model={model}
+        onModel={onModel}
       />
 
       {!showResults && (
-        <div className="flex flex-col lg:pt-8 text-left animate-fade-in">
-          <h1 className="text-[44px] md:text-[56px] lg:text-[70px] leading-[1.1] tracking-[-1.2px] font-bold text-foreground mb-6">
-            Boolean strings,<br />
+        <div className="flex flex-col pt-2 lg:pt-6 text-center items-center animate-fade-in w-full">
+          <h1 className="text-[44px] md:text-[56px] lg:text-[70px] leading-[1.1] tracking-[-1.2px] font-bold text-foreground mb-6 max-w-3xl">
+            Boolean strings, <br className="hidden sm:block" />
             <span className="text-muted-foreground">in one click.</span>
           </h1>
-          <p className="text-base text-foreground mb-8 max-w-sm leading-[1.4]">
+          <p className="text-lg text-foreground mb-8 max-w-2xl leading-[1.5]">
             Stop wrestling with complex search syntax. Paste any job description, and instantly get production-ready boolean strings built for high recall, precision, and perfect balance. The daily struggle of every recruiter, solved.
           </p>
-          <div className="flex items-center">
+          <div className="flex items-center justify-center">
             <SetupModal onOpenKey={() => setKeyDialogOpen(true)} />
           </div>
         </div>

@@ -50,6 +50,7 @@ function Index() {
               keyDialogOpen={keyDialogOpen}
               setKeyDialogOpen={setKeyDialogOpen}
               model={model}
+              onModel={onModel}
             />
           </div>
         </section>

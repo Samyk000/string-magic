@@ -12,13 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ExternalLink, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { ModelSelect } from "./ModelSelect";
 
 type Props = {
   open: boolean;
-  onOpenChange: (v: boolean) => void;
   initialKey: string;
   onSave: (key: string) => void;
   onClear: () => void;
+  model: string;
+  onModel: (id: string) => void;
 };
 
 export function ApiKeyDialog({
@@ -27,6 +29,8 @@ export function ApiKeyDialog({
   initialKey,
   onSave,
   onClear,
+  model,
+  onModel,
 }: Props) {
   const [val, setVal] = useState(initialKey);
   const [show, setShow] = useState(false);
@@ -52,10 +56,10 @@ export function ApiKeyDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-md rounded-[32px] p-8 border-0 shadow-[0_16px_32px_rgba(0,0,0,0.12)] bg-background">
         <DialogHeader>
-          <DialogTitle>OpenRouter API key</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-[22px] font-bold">API Configuration</DialogTitle>
+          <DialogDescription className="text-base text-foreground mt-2">
             Stored only in your browser's localStorage. Never sent to our
             servers.
           </DialogDescription>
@@ -86,7 +90,14 @@ export function ApiKeyDialog({
             </button>
           </div>
 
-          <div className="rounded-xl border border-border bg-surface-soft p-3 text-sm text-muted-foreground">
+          <div className="pt-2">
+            <Label className="font-mono text-[11px] uppercase tracking-widest text-muted-foreground block mb-1">
+              Select Model
+            </Label>
+            <ModelSelect apiKey={val || initialKey} value={model} onChange={onModel} />
+          </div>
+
+          <div className="rounded-2xl border border-border bg-surface-soft p-4 mt-2 text-[13px] text-muted-foreground leading-relaxed">
             Don't have an account?{" "}
             <a
               href="https://openrouter.ai/keys"
@@ -101,30 +112,26 @@ export function ApiKeyDialog({
           </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:justify-between">
+        <DialogFooter className="mt-4 flex sm:justify-between items-center">
           {initialKey ? (
             <Button
-              type="button"
               variant="ghost"
               onClick={() => {
                 onClear();
                 setVal("");
-                toast.success("API key cleared.");
+                toast.success("Key removed.");
+                onOpenChange(false);
               }}
-              className="text-destructive hover:text-destructive"
+              className="text-muted-foreground hover:text-destructive h-10 px-4 rounded-2xl font-bold"
             >
-              <Trash2 className="mr-1.5 h-4 w-4" />
-              Clear
+              <Trash2 className="mr-2 h-4 w-4" /> Remove Key
             </Button>
           ) : (
-            <span />
+            <div />
           )}
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button onClick={save}>Save key</Button>
-          </div>
+          <Button onClick={save} className="h-10 px-6 rounded-2xl bg-primary hover:bg-[#cc001f] text-primary-foreground font-bold shadow-none">
+            Save Configuration
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

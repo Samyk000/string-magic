@@ -97,38 +97,38 @@
 }
 
 .dark {
-  /* Pinterest Design System is strictly cream-chrome. Mapping dark to same. */
-  --background: #ffffff;
-  --foreground: #000000;
-  --surface: #ffffff;
-  --surface-soft: #fbfbf9;
-  --card: #f6f6f3;
-  --card-foreground: #33332e;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
+  /* Premium Charcoal Dark Mode with Pinterest Accents */
+  --background: #000000;
+  --foreground: #ffffff;
+  --surface: #111111;
+  --surface-soft: #181818;
+  --card: #181818;
+  --card-foreground: #f0f0f0;
+  --popover: #181818;
+  --popover-foreground: #ffffff;
   --primary: #e60023;
   --primary-foreground: #ffffff;
-  --secondary: #e5e5e0;
-  --secondary-foreground: #000000;
-  --muted: #f6f6f3;
-  --muted-foreground: #62625b;
-  --accent: #fbfbf9;
-  --accent-foreground: #000000;
+  --secondary: #2b2b2b;
+  --secondary-foreground: #ffffff;
+  --muted: #2b2b2b;
+  --muted-foreground: #a1a1aa;
+  --accent: #181818;
+  --accent-foreground: #ffffff;
   --destructive: #9e0a0a;
   --destructive-foreground: #ffffff;
-  --border: #dadad3;
-  --input: #dadad3;
+  --border: #27272a;
+  --input: #27272a;
   --ring: #435ee5;
   
   --primary-pressed: #cc001f;
-  --secondary-pressed: #c8c8c1;
-  --ash: #91918c;
-  --ink-soft: #211922;
+  --secondary-pressed: #3f3f46;
+  --ash: #a1a1aa;
+  --ink-soft: #d4d4d8;
 
   --accent-blue: #617bff;
   --accent-violet: #7e238b;
-  --accent-green: #103c25;
-  --accent-amber: #c8c8c1;
+  --accent-green: #34d399; /* Adjusted for dark mode contrast */
+  --accent-amber: #27272a;
   --accent-rose: #e60023;
 }
 

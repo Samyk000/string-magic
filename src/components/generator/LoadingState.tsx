@@ -27,28 +27,12 @@ export function LoadingState() {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border bg-surface/80 px-4 py-3 backdrop-blur-xl">
-      {/* faint moving glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          background:
-            "radial-gradient(600px circle at var(--x,30%) 50%, color-mix(in oklab, var(--accent-violet) 22%, transparent), transparent 60%)",
-          animation: "shimmerBar 4s linear infinite",
-        }}
-      />
+    <div className="relative overflow-hidden rounded-2xl bg-surface-soft px-4 py-3">
 
       <div className="relative flex items-center gap-3">
         <span className="relative inline-flex h-2 w-2 shrink-0">
-          <span
-            className="absolute inset-0 animate-ping rounded-full opacity-70"
-            style={{ background: "var(--accent-blue)" }}
-          />
-          <span
-            className="relative inline-flex h-2 w-2 rounded-full"
-            style={{ background: "var(--accent-blue)" }}
-          />
+          <span className="absolute inset-0 animate-ping rounded-full opacity-70 bg-primary" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
         </span>
 
         <div className="flex-1 overflow-hidden">
@@ -80,14 +64,8 @@ export function LoadingState() {
 
       <div className="relative mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-border/50">
         <div
-          className="h-full rounded-full transition-[width] duration-200 ease-out"
-          style={{
-            width: `${progress}%`,
-            background:
-              "linear-gradient(90deg, var(--accent-blue), var(--accent-violet), var(--accent-green))",
-            backgroundSize: "200% 100%",
-            animation: "shimmerBar 2.4s linear infinite",
-          }}
+          className="h-full rounded-full bg-primary transition-[width] duration-200 ease-out"
+          style={{ width: `${progress}%` }}
         />
       </div>
     </div>
