@@ -3,21 +3,23 @@ import { useEffect, useState } from "react";
 const STEPS = [
   "Parsing job description",
   "Extracting titles & skills",
-  "Drafting Boolean variants",
-  "Validating syntax",
+  "Drafting Broad variant",
+  "Drafting Balanced variant",
+  "Drafting Strict variant",
+  "Validating Boolean syntax",
 ];
 
 export function LoadingState() {
-  const [progress, setProgress] = useState(8);
+  const [progress, setProgress] = useState(6);
   const [stepIdx, setStepIdx] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setProgress((p) => (p < 94 ? p + Math.max(0.5, (96 - p) / 22) : p));
-    }, 110);
+      setProgress((p) => (p < 95 ? p + Math.max(0.4, (97 - p) / 26) : p));
+    }, 100);
     const stepId = setInterval(() => {
       setStepIdx((i) => (i + 1) % STEPS.length);
-    }, 1300);
+    }, 1100);
     return () => {
       clearInterval(id);
       clearInterval(stepId);
@@ -25,8 +27,19 @@ export function LoadingState() {
   }, []);
 
   return (
-    <div className="rounded-xl border border-border bg-surface/70 px-4 py-3 backdrop-blur">
-      <div className="flex items-center gap-3">
+    <div className="relative overflow-hidden rounded-xl border border-border bg-surface/80 px-4 py-3 backdrop-blur-xl">
+      {/* faint moving glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          background:
+            "radial-gradient(600px circle at var(--x,30%) 50%, color-mix(in oklab, var(--accent-violet) 22%, transparent), transparent 60%)",
+          animation: "shimmerBar 4s linear infinite",
+        }}
+      />
+
+      <div className="relative flex items-center gap-3">
         <span className="relative inline-flex h-2 w-2 shrink-0">
           <span
             className="absolute inset-0 animate-ping rounded-full opacity-70"
@@ -37,19 +50,35 @@ export function LoadingState() {
             style={{ background: "var(--accent-blue)" }}
           />
         </span>
-        <span className="flex-1 truncate text-xs font-medium text-foreground/90">
-          {STEPS[stepIdx]}
-          <span className="ml-1 inline-flex">
-            <span className="loading-dot" style={{ animationDelay: "0ms" }}>.</span>
-            <span className="loading-dot" style={{ animationDelay: "180ms" }}>.</span>
-            <span className="loading-dot" style={{ animationDelay: "360ms" }}>.</span>
-          </span>
-        </span>
+
+        <div className="flex-1 overflow-hidden">
+          <div className="relative h-4">
+            {STEPS.map((s, i) => (
+              <span
+                key={s}
+                className="absolute inset-0 truncate text-xs font-medium text-foreground/90 transition-all duration-500"
+                style={{
+                  opacity: i === stepIdx ? 1 : 0,
+                  transform: `translateY(${i === stepIdx ? 0 : i < stepIdx ? -8 : 8}px)`,
+                }}
+              >
+                {s}
+                <span className="ml-1 inline-flex">
+                  <span className="loading-dot" style={{ animationDelay: "0ms" }}>.</span>
+                  <span className="loading-dot" style={{ animationDelay: "180ms" }}>.</span>
+                  <span className="loading-dot" style={{ animationDelay: "360ms" }}>.</span>
+                </span>
+              </span>
+            ))}
+          </div>
+        </div>
+
         <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
           {Math.floor(progress)}%
         </span>
       </div>
-      <div className="mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-border/50">
+
+      <div className="relative mt-2.5 h-[3px] w-full overflow-hidden rounded-full bg-border/50">
         <div
           className="h-full rounded-full transition-[width] duration-200 ease-out"
           style={{

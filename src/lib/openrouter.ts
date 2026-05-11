@@ -1,4 +1,4 @@
-import { SYSTEM_PROMPT, userPrompt, type Platform } from "./prompt";
+import { SYSTEM_PROMPT, userPrompt } from "./prompt";
 
 const BASE = "https://openrouter.ai/api/v1";
 
@@ -9,7 +9,7 @@ export type ORModel = {
   pricing?: { prompt?: string; completion?: string };
 };
 
-export type Variant = { label: string; platform?: string; string: string };
+export type Variant = { label: string; string: string };
 export type GenerateResult = {
   variants: Variant[];
   rationale: string;
@@ -36,16 +36,13 @@ export async function fetchFreeModels(apiKey?: string): Promise<ORModel[]> {
   });
   if (!res.ok) throw new Error(`Failed to load models (${res.status})`);
   const data = (await res.json()) as { data: ORModel[] };
-  return data.data
-    .filter(isFree)
-    .sort((a, b) => a.name.localeCompare(b.name));
+  return data.data.filter(isFree).sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export async function generateBoolean(opts: {
   apiKey: string;
   model: string;
   jd: string;
-  platforms: Platform[];
   signal?: AbortSignal;
 }): Promise<GenerateResult> {
   const res = await fetch(`${BASE}/chat/completions`, {
@@ -60,7 +57,7 @@ export async function generateBoolean(opts: {
       model: opts.model,
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt(opts.jd, opts.platforms) },
+        { role: "user", content: userPrompt(opts.jd) },
       ],
       response_format: { type: "json_object" },
       temperature: 0.4,
