@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { StructuralBackground } from "@/components/layout/StructuralBackground";
 import { GeneratorPanel } from "@/components/generator/GeneratorPanel";
 
 import { storage } from "@/lib/storage";
@@ -30,8 +29,7 @@ function Index() {
   useReveal();
 
   return (
-    <div className="relative min-h-screen">
-      <StructuralBackground />
+    <div className="relative min-h-screen bg-background">
       <Header
         onOpenKey={() => setKeyDialogOpen(true)}
         hasKey={!!apiKey}
@@ -43,7 +41,7 @@ function Index() {
       <main className="pb-16">
         <section
           id="top"
-          className="mx-auto w-full max-w-screen-2xl px-4 md:px-8 pt-8 md:pt-12"
+          className="mx-auto w-full max-w-7xl px-4 md:px-6 pt-16"
         >
           <div className="reveal">
             <GeneratorPanel

@@ -1,4 +1,3 @@
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sparkles, KeyRound } from "lucide-react";
 import { ModelSelect } from "@/components/generator/ModelSelect";
 
@@ -12,13 +11,13 @@ type Props = {
 
 export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/75 backdrop-blur-xl">
-      <div className="mx-auto flex h-12 w-full max-w-screen-2xl items-center justify-between gap-2 px-4 md:px-8">
+    <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur-xl border-b border-border">
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-2 px-4 md:px-6">
         <a href="#top" className="flex shrink-0 items-center gap-2">
-          <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-border bg-surface">
-            <Sparkles className="h-3 w-3" />
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Sparkles className="h-5 w-5" fill="currentColor" />
           </span>
-          <span className="text-sm font-semibold tracking-tight">
+          <span className="text-base font-bold tracking-tight text-foreground">
             String Magic
           </span>
         </a>
@@ -33,22 +32,17 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
           <button
             type="button"
             onClick={onOpenKey}
-            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground"
+            className="inline-flex h-10 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition-colors shadow-none"
+            style={{
+              backgroundColor: hasKey ? "var(--secondary)" : "var(--primary)",
+              color: hasKey ? "var(--foreground)" : "var(--primary-foreground)",
+            }}
           >
-            <KeyRound className="h-3.5 w-3.5" />
+            <KeyRound className="h-4 w-4" />
             <span className="hidden sm:inline">
               {hasKey ? "Free API key" : "Set Free API key"}
             </span>
-            <span
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{
-                background: hasKey
-                  ? "var(--accent-green)"
-                  : "var(--accent-amber)",
-              }}
-            />
           </button>
-          <ThemeToggle />
         </div>
       </div>
     </header>

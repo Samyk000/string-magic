@@ -58,73 +58,78 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 1rem;
 
-  /* Light: bg #F7F7F5, surface #FFFFFF, text #09090B, muted #71717A */
-  --background: oklch(0.972 0.003 95);
-  --foreground: oklch(0.145 0.005 285);
-  --surface: oklch(1 0 0);
-  --surface-soft: oklch(0.99 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.005 285);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.005 285);
-  --primary: oklch(0.145 0.005 285);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.003 285);
-  --secondary-foreground: oklch(0.145 0.005 285);
-  --muted: oklch(0.96 0.003 285);
-  --muted-foreground: oklch(0.5 0.012 285);
-  --accent: oklch(0.96 0.003 285);
-  --accent-foreground: oklch(0.145 0.005 285);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0 0 0 / 0.08);
-  --input: oklch(0 0 0 / 0.12);
-  --ring: oklch(0.5 0.012 285);
+  /* Pinterest Chrome Palette */
+  --background: #ffffff;
+  --foreground: #000000;
+  --surface: #ffffff;
+  --surface-soft: #fbfbf9;
+  --card: #f6f6f3;
+  --card-foreground: #33332e;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #e60023;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e5e0;
+  --secondary-foreground: #000000;
+  --muted: #f6f6f3;
+  --muted-foreground: #62625b;
+  --accent: #fbfbf9;
+  --accent-foreground: #000000;
+  --destructive: #9e0a0a;
+  --destructive-foreground: #ffffff;
+  --border: #dadad3;
+  --input: #dadad3;
+  --ring: #435ee5;
 
-  --accent-blue: oklch(0.55 0.22 264);
-  --accent-violet: oklch(0.55 0.24 295);
-  --accent-green: oklch(0.7 0.16 165);
-  --accent-amber: oklch(0.78 0.16 75);
-  --accent-rose: oklch(0.65 0.22 15);
+  /* Extended Pinterest Tokens */
+  --primary-pressed: #cc001f;
+  --secondary-pressed: #c8c8c1;
+  --ash: #91918c;
+  --ink-soft: #211922;
 
-  --chart-1: var(--accent-blue);
-  --chart-2: var(--accent-violet);
-  --chart-3: var(--accent-green);
-  --chart-4: var(--accent-amber);
-  --chart-5: var(--accent-rose);
+  --accent-blue: #617bff;
+  --accent-violet: #7e238b;
+  --accent-green: #103c25;
+  --accent-amber: #c8c8c1;
+  --accent-rose: #e60023;
 }
 
 .dark {
-  /* Dark: bg #050505, surface #111, text #FAFAFA */
-  --background: oklch(0.13 0 0);
-  --foreground: oklch(0.985 0 0);
-  --surface: oklch(0.18 0 0);
-  --surface-soft: oklch(0.2 0 0);
-  --card: oklch(0.18 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.18 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.13 0 0);
-  --secondary: oklch(0.22 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.22 0 0);
-  --muted-foreground: oklch(0.7 0.005 285);
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 0.09);
-  --input: oklch(1 0 0 / 0.15);
-  --ring: oklch(0.55 0.012 285);
+  /* Pinterest Design System is strictly cream-chrome. Mapping dark to same. */
+  --background: #ffffff;
+  --foreground: #000000;
+  --surface: #ffffff;
+  --surface-soft: #fbfbf9;
+  --card: #f6f6f3;
+  --card-foreground: #33332e;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #e60023;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e5e0;
+  --secondary-foreground: #000000;
+  --muted: #f6f6f3;
+  --muted-foreground: #62625b;
+  --accent: #fbfbf9;
+  --accent-foreground: #000000;
+  --destructive: #9e0a0a;
+  --destructive-foreground: #ffffff;
+  --border: #dadad3;
+  --input: #dadad3;
+  --ring: #435ee5;
+  
+  --primary-pressed: #cc001f;
+  --secondary-pressed: #c8c8c1;
+  --ash: #91918c;
+  --ink-soft: #211922;
 
-  --accent-blue: oklch(0.62 0.22 264);
-  --accent-violet: oklch(0.62 0.24 295);
-  --accent-green: oklch(0.72 0.16 165);
-  --accent-amber: oklch(0.8 0.16 75);
-  --accent-rose: oklch(0.68 0.22 15);
+  --accent-blue: #617bff;
+  --accent-violet: #7e238b;
+  --accent-green: #103c25;
+  --accent-amber: #c8c8c1;
+  --accent-rose: #e60023;
 }
 
 @layer base {

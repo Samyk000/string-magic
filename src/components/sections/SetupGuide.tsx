@@ -39,15 +39,15 @@ export function SetupModal({ onOpenKey }: Props) {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-lg border border-foreground/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground/80 transition-all duration-500 hover:border-foreground/80 hover:text-foreground hover:bg-foreground/5 animate-[pulse_3s_cubic-bezier(0.4,0,0.6,1)_infinite]"
+          className="inline-flex h-8 items-center justify-center rounded-full bg-secondary px-4 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground hover:bg-[#c8c8c1] transition-colors"
         >
           Setup · 60 seconds
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md rounded-[32px] p-8 border-0 bg-background shadow-[0_16px_32px_rgba(0,0,0,0.12)]">
         <DialogHeader>
-          <DialogTitle>Setup · 60 seconds</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-[22px] font-bold">Setup · 60 seconds</DialogTitle>
+          <DialogDescription className="text-base text-foreground mt-2">
             Bring your own key to use free AI models securely.
           </DialogDescription>
         </DialogHeader>
@@ -56,7 +56,7 @@ export function SetupModal({ onOpenKey }: Props) {
           {STEPS.map((s) => (
             <div
               key={s.n}
-              className="flex items-start gap-4 rounded-xl border border-border/50 bg-surface-soft/50 px-4 py-3.5 transition-colors hover:bg-surface-soft"
+              className="flex items-start gap-4 rounded-2xl bg-card px-4 py-4"
             >
               <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-xs font-bold text-background shadow-sm">
                 {s.n}

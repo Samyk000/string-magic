@@ -126,11 +126,11 @@ export function GeneratorPanel({
 
       {!showResults && (
         <div className="flex flex-col lg:pt-8 text-left animate-fade-in">
-          <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl mb-6">
+          <h1 className="text-[44px] md:text-[56px] lg:text-[70px] leading-[1.1] tracking-[-1.2px] font-bold text-foreground mb-6">
             Boolean strings,<br />
             <span className="text-muted-foreground">in one click.</span>
           </h1>
-          <p className="text-[15px] text-muted-foreground mb-8 max-w-sm leading-relaxed">
+          <p className="text-base text-foreground mb-8 max-w-sm leading-[1.4]">
             Stop wrestling with complex search syntax. Paste any job description, and instantly get production-ready boolean strings built for high recall, precision, and perfect balance. The daily struggle of every recruiter, solved.
           </p>
           <div className="flex items-center">
@@ -154,13 +154,13 @@ export function GeneratorPanel({
       )}
 
       {/* Main dashboard card */}
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-surface/80 shadow-sm backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-card">
         {/* Top bar */}
-        <div className="flex items-center justify-between gap-3 border-b border-border/60 bg-surface-soft/40 px-4 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="flex items-center justify-between gap-3 px-6 py-4">
+          <span className="text-xs font-semibold text-muted-foreground">
             {showResults ? "Results · 3 strings" : loading ? "Working" : "Job description"}
           </span>
-          <div className="flex items-center gap-2 font-mono text-[10px] tabular-nums text-muted-foreground">
+          <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
             {!showResults && !loading && (
               <>
                 <button
@@ -169,7 +169,7 @@ export function GeneratorPanel({
                     setJd(SAMPLES[sampleIdx]);
                     setSampleIdx((p) => (p + 1) % SAMPLES.length);
                   }}
-                  className="text-foreground/70 underline-offset-4 hover:text-foreground hover:underline"
+                  className="text-foreground hover:underline"
                 >
                   Try sample
                 </button>
@@ -208,29 +208,28 @@ export function GeneratorPanel({
               onChange={(e) => setJd(e.target.value.slice(0, max))}
               placeholder="Paste a job description here…"
               rows={12}
-              className="result-scroll w-full resize-none border-0 bg-transparent p-5 text-[15px] leading-relaxed text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-0"
+              className="result-scroll w-full resize-none border-0 bg-transparent px-6 pb-6 text-base leading-[1.4] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
             />
           )}
         </div>
 
         {/* Footer row */}
         {!showResults && (
-          <div className="flex items-center justify-end gap-3 border-t border-border/70 bg-surface-soft/60 px-3 py-2.5">
+          <div className="flex items-center justify-end gap-3 px-6 pb-6">
             {loading ? (
               <Button
                 onClick={cancel}
-                variant="outline"
-                className="h-9 rounded-lg px-4 text-sm font-semibold"
+                className="h-10 rounded-2xl bg-secondary hover:bg-[#c8c8c1] text-foreground px-5 text-sm font-bold shadow-none"
               >
-                <X className="mr-1.5 h-3.5 w-3.5" />
+                <X className="mr-1.5 h-4 w-4" />
                 Cancel
               </Button>
             ) : (
               <Button
                 onClick={generate}
-                className="h-9 rounded-lg px-4 text-sm font-semibold transition-transform active:scale-[0.98]"
+                className="h-10 rounded-2xl bg-primary hover:bg-[#cc001f] text-primary-foreground px-5 text-sm font-bold transition-colors shadow-none"
               >
-                <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                <Sparkles className="mr-1.5 h-4 w-4" />
                 Generate
               </Button>
             )}
@@ -276,7 +275,7 @@ export function GeneratorPanel({
       {!showResults && history.length > 0 && (
         <div className="col-span-1 lg:col-span-2 mt-4 lg:mt-8 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold tracking-tight text-foreground">Recent Searches</h2>
+            <h2 className="text-[22px] font-bold tracking-tight text-foreground">Recent Searches</h2>
             <Button
               variant="ghost"
               size="sm"
@@ -285,19 +284,19 @@ export function GeneratorPanel({
                 setHistory([]);
                 toast.success("History cleared");
               }}
-              className="text-xs text-muted-foreground hover:text-destructive"
+              className="text-sm font-bold text-muted-foreground hover:text-destructive rounded-2xl"
             >
               Clear History
             </Button>
           </div>
-          <div className="overflow-hidden rounded-xl border border-border/70 bg-surface/40 shadow-sm backdrop-blur">
+          <div className="overflow-hidden rounded-2xl bg-card">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead>
-                  <tr className="border-b border-border/50 bg-surface-soft/40 text-muted-foreground">
-                    <th className="font-medium p-3.5 pl-4 w-36">Date</th>
-                    <th className="font-medium p-3.5">Job snippet</th>
-                    <th className="font-medium p-3.5 pr-4 text-right w-24">Action</th>
+                  <tr className="border-b border-border text-muted-foreground">
+                    <th className="font-bold p-4 pl-6 w-36">Date</th>
+                    <th className="font-bold p-4">Job snippet</th>
+                    <th className="font-bold p-4 pr-6 text-right w-24">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -311,13 +310,13 @@ export function GeneratorPanel({
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
                     >
-                      <td className="p-3.5 pl-4 text-muted-foreground text-[13px]">
+                      <td className="p-4 pl-6 text-muted-foreground text-sm">
                         {new Date(h.createdAt).toLocaleDateString()} {new Date(h.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </td>
-                      <td className="p-3.5 text-foreground/80 text-[13px] max-w-[200px] sm:max-w-md lg:max-w-2xl truncate">
+                      <td className="p-4 text-foreground text-sm max-w-[200px] sm:max-w-md lg:max-w-2xl truncate">
                         {h.jd.substring(0, 150)}{h.jd.length > 150 ? '...' : ''}
                       </td>
-                      <td className="p-3.5 pr-4 text-right">
+                      <td className="p-4 pr-6 text-right">
                         <Button
                           variant="ghost"
                           size="icon"
