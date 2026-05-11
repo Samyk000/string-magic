@@ -2,12 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import { ApiKeyDialog } from "./ApiKeyDialog";
-import { PlatformTabs } from "./PlatformTabs";
 import { LoadingState } from "./LoadingState";
 import { ResultRow } from "./ResultCard";
 import { storage } from "@/lib/storage";
 import { generateBoolean, type GenerateResult } from "@/lib/openrouter";
-import type { Platform } from "@/lib/prompt";
 import { toast } from "sonner";
 
 const SAMPLE = `Senior Backend Engineer (Remote, US)
@@ -38,7 +36,6 @@ export function GeneratorPanel({
   setKeyDialogOpen,
   model,
 }: Props) {
-  const [platforms, setPlatforms] = useState<Platform[]>(["global"]);
   const [jd, setJd] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<GenerateResult | null>(null);
@@ -54,10 +51,6 @@ export function GeneratorPanel({
       toast.error("Select a free model in the header.");
       return;
     }
-    if (!platforms.length) {
-      toast.error("Pick at least one platform.");
-      return;
-    }
     if (jd.trim().length < 40) {
       toast.error("Add a longer job description (40+ characters).");
       return;
@@ -65,7 +58,7 @@ export function GeneratorPanel({
     setLoading(true);
     setResult(null);
     try {
-      const r = await generateBoolean({ apiKey, model, jd, platforms });
+      const r = await generateBoolean({ apiKey, model, jd });
       setResult(r);
       toast.success("Boolean strings ready");
       setTimeout(() => {
@@ -96,7 +89,7 @@ export function GeneratorPanel({
         }}
       />
 
-      {/* Loading bar — sits ABOVE the generate area */}
+      {/* Loading bar — sits ABOVE the dashboard card */}
       {loading && (
         <div className="mb-3 animate-fade-in">
           <LoadingState />
@@ -105,48 +98,50 @@ export function GeneratorPanel({
 
       {/* Main dashboard card */}
       <div className="relative overflow-hidden rounded-2xl border border-border bg-surface/80 shadow-sm backdrop-blur-xl">
+        {/* Top bar inside the textarea: meta on the right */}
+        <div className="flex items-center justify-between gap-3 border-b border-border/60 bg-surface-soft/40 px-4 py-2">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Job description
+          </span>
+          <div className="flex items-center gap-2 font-mono text-[10px] tabular-nums text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setJd(SAMPLE)}
+              disabled={loading}
+              className="text-foreground/70 underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50"
+            >
+              Try sample
+            </button>
+            <span className="opacity-40">·</span>
+            <span>
+              {jd.length}/{max}
+            </span>
+          </div>
+        </div>
+
         {/* JD textarea */}
         <textarea
           value={jd}
           onChange={(e) => setJd(e.target.value.slice(0, max))}
           disabled={loading}
           placeholder="Paste a job description here…"
-          rows={10}
+          rows={12}
           className="w-full resize-none border-0 bg-transparent p-5 text-[15px] leading-relaxed text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-0 disabled:opacity-60"
         />
 
-        {/* Footer row: platforms + meta + generate */}
-        <div className="flex flex-col gap-3 border-t border-border/70 bg-surface-soft/60 p-3 md:flex-row md:items-center md:justify-between">
-          <PlatformTabs
-            value={platforms}
-            onChange={setPlatforms}
+        {/* Footer row: generate */}
+        <div className="flex items-center justify-between gap-3 border-t border-border/70 bg-surface-soft/60 px-3 py-2.5">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Outputs 3 strings · Broad · Balanced · Strict
+          </span>
+          <Button
+            onClick={generate}
             disabled={loading}
-          />
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 font-mono text-[10px] tabular-nums text-muted-foreground">
-              <button
-                type="button"
-                onClick={() => setJd(SAMPLE)}
-                disabled={loading}
-                className="text-foreground/70 underline-offset-4 hover:text-foreground hover:underline disabled:opacity-50"
-              >
-                Try sample
-              </button>
-              <span className="opacity-40">·</span>
-              <span>
-                {jd.length}/{max}
-              </span>
-            </div>
-            <Button
-              onClick={generate}
-              disabled={loading}
-              className="h-9 rounded-lg px-4 text-sm font-semibold transition-transform active:scale-[0.98]"
-            >
-              <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-              {loading ? "Generating…" : "Generate"}
-            </Button>
-          </div>
+            className="h-9 rounded-lg px-4 text-sm font-semibold transition-transform active:scale-[0.98]"
+          >
+            <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+            {loading ? "Generating…" : "Generate"}
+          </Button>
         </div>
       </div>
 
@@ -166,12 +161,7 @@ export function GeneratorPanel({
 
           <div className="overflow-hidden rounded-2xl border border-border bg-surface">
             {result.variants.map((v, i) => (
-              <ResultRow
-                key={(v.platform ?? v.label) + i}
-                label={v.label}
-                value={v.string}
-                platform={v.platform}
-              />
+              <ResultRow key={v.label + i} index={i} label={v.label} value={v.string} />
             ))}
           </div>
 

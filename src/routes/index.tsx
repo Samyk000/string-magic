@@ -43,7 +43,7 @@ function Index() {
       <main className="pb-16">
         <section
           id="top"
-          className="mx-auto w-full max-w-3xl px-4 pt-8 md:pt-12"
+          className="mx-auto w-full max-w-5xl px-4 pt-8 md:pt-12"
         >
           <div className="reveal mb-6 text-center">
             <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
