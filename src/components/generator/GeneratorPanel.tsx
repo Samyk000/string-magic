@@ -152,12 +152,12 @@ export function GeneratorPanel({
 
       {!showResults && (
         <div className="flex flex-col text-left animate-fade-in w-full pb-8 lg:pb-0">
-          <h1 className="text-[56px] md:text-[72px] leading-[1.05] tracking-[-2.5px] font-bold text-foreground mb-6">
-            Boolean strings, <br />
-            <span className="text-primary">in one click.</span>
+          <h1 className="text-[52px] md:text-[68px] leading-[1.05] tracking-[-2.5px] font-bold text-foreground mb-6">
+            Manual crafting, <br />
+            <span className="text-primary">turned to quick magic.</span>
           </h1>
           <p className="text-lg font-normal text-body mb-10 max-w-md leading-[1.55]">
-            Stop wrestling with complex search syntax. Paste any job description, and instantly get production-ready boolean strings built for high recall, precision, and perfect balance.
+            Built for Recruiters and Hiring Managers who value their speed. Instantly transform any job description into flawless, ready-to-paste Boolean strings engineered for high-yield sourcing.
           </p>
           <div className="flex items-center">
             <SetupModal onOpenKey={() => setKeyDialogOpen(true)} />

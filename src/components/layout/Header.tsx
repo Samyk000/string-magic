@@ -62,26 +62,65 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
               <DialogTrigger asChild>
                 <button className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
                   <Info className="h-3.5 w-3.5 text-primary/60" />
-                  How it works
+                  Why use this?
                 </button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
-                <DialogHeader>
-                  <DialogTitle className="text-[22px] font-bold flex items-center gap-2">
-                    <Info className="h-6 w-6 text-primary" /> How it works
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 mt-4 text-sm text-foreground/80 leading-relaxed">
-                  <p>String Magic pairs OpenRouter's API with optimized architecture to produce instant Boolean strings.</p>
-                  <ol className="space-y-3 list-decimal pl-4 font-medium text-foreground">
-                    <li>Link your local OpenRouter key.</li>
-                    <li>Paste any job description text.</li>
-                    <li>AI extracts precise titles, skills, and blockers.</li>
-                    <li>Copy ready-to-search Boolean variants immediately.</li>
-                  </ol>
-                  <div className="bg-surface-soft rounded-xl p-4 text-xs text-muted-foreground font-mono mt-2 border border-border/50">
-                    Fully privacy-respecting. No servers. No logging.
+              <DialogContent className="sm:max-w-lg rounded-xl p-0 border border-hairline bg-surface shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)] overflow-hidden">
+                <div className="bg-gradient-to-br from-surface to-surface-soft p-8 border-b border-border/50">
+                  <DialogHeader>
+                    <DialogTitle className="text-[24px] font-bold tracking-tight text-foreground flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <Sparkles className="h-4.5 w-4.5" />
+                      </span>
+                      Supercharge Your Sourcing
+                    </DialogTitle>
+                  </DialogHeader>
+                  <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed">
+                    Stop wrestling with commas, brackets, and quote marks. String Magic turns manual string-crafting from a chore into a single-click miracle.
+                  </p>
+                </div>
+
+                <div className="p-6 grid gap-4">
+                  <div className="flex gap-4 rounded-lg border border-border/40 bg-background/50 p-4">
+                    <div className="flex-shrink-0">
+                      <div className="p-2 rounded-md bg-primary/5 text-primary">
+                        <Activity className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Zero-Effort Extraction</h4>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">Instantly separates essential hard-skills, exact job titles, and negative keywords directly from raw JD text.</p>
+                    </div>
                   </div>
+
+                  <div className="flex gap-4 rounded-lg border border-border/40 bg-background/50 p-4">
+                    <div className="flex-shrink-0">
+                      <div className="p-2 rounded-md bg-primary/5 text-primary">
+                        <Trophy className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Three Tiers of Precision</h4>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">Instantly outputs Broad, Balanced, and Strict boolean versions tailored for varying candidate pool sizes.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 rounded-lg border border-border/40 bg-background/50 p-4">
+                    <div className="flex-shrink-0">
+                      <div className="p-2 rounded-md bg-primary/5 text-primary">
+                        <KeyRound className="h-4 w-4" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">Ready to Paste</h4>
+                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">Zero syntax hallucinations. Every single quote is engineered perfectly for LinkedIn Recruiter, Google, and your ATS.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-surface-soft px-6 py-4 flex items-center justify-between text-xs border-t border-hairline">
+                  <span className="text-muted-foreground font-medium">Designed for modern recruiters.</span>
+                  <span className="font-bold text-primary">No training required.</span>
                 </div>
               </DialogContent>
             </Dialog>
@@ -90,21 +129,21 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
               <DialogTrigger asChild>
                 <button className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
                   <Trophy className="h-3.5 w-3.5 text-primary/60" />
-                  Top Models
+                  Recommended Models
                 </button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
                 <DialogHeader>
                   <DialogTitle className="text-[22px] font-bold flex items-center gap-2">
-                    <Trophy className="h-6 w-6 text-primary" /> Recommended Models
+                    <Trophy className="h-6 w-6 text-primary" /> Recommended Free Models
                   </DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col gap-2.5 mt-4">
                   {[
-                    { name: "Baidu Qianfan: CoBuddy", desc: "Optimized" },
+                    { name: "Baidu Qianfan: CoBuddy", desc: "Fast & Precise" },
                     { name: "Poolside: Laguna M.1", desc: "Fast & Free" },
                     { name: "Arcee AI: Trinity Large", desc: "High Reasoning" },
-                    { name: "MiniMax: MiniMax M2.5", desc: "Free Tier" },
+                    { name: "MiniMax: MiniMax M2.5", desc: "Excellent Free Tier" },
                   ].map((m, i) => (
                     <div key={i} className="flex items-center justify-between bg-card border border-hairline rounded-xl px-4 py-3 shadow-sm">
                       <div className="flex flex-col">
