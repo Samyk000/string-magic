@@ -50,7 +50,9 @@ export function GeneratorPanel({
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [sampleIdx, setSampleIdx] = useState(0);
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
-  const max = 8000;
+  const [streamLength, setStreamLength] = useState(0);
+
+  const max = 5000;
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -85,8 +87,12 @@ export function GeneratorPanel({
 
     setLoading(true);
     setResult(null);
+    setStreamLength(0);
     try {
-      const r = await generateBoolean({ apiKey, model, jd, signal: controller.signal });
+      const r = await generateBoolean({ 
+        apiKey, model, jd, signal: controller.signal,
+        onProgress: (text) => setStreamLength(text.length)
+      });
       setResult(r);
       const hItem: HistoryItem = {
         id: crypto.randomUUID(),
@@ -96,6 +102,12 @@ export function GeneratorPanel({
       };
       storage.saveHistory(hItem);
       setHistory(storage.getHistory());
+
+      // Increment local rate limit tracker to ensure badge decreases seamlessly
+      const used = parseInt(localStorage.getItem("local_rate_used") || "0", 10);
+      localStorage.setItem("local_rate_used", (used + 1).toString());
+      window.dispatchEvent(new Event("ratelimit_update"));
+
       toast.success("Boolean strings ready");
     } catch (e) {
       // Silently swallow abort errors — user intentionally cancelled
@@ -200,7 +212,7 @@ export function GeneratorPanel({
         <div className="relative">
           {loading ? (
             <div className="animate-fade-in p-5">
-              <LoadingState />
+              <LoadingState streamLength={streamLength} />
             </div>
           ) : showResults ? (
             <div className="animate-fade-in">

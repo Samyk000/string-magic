@@ -44,6 +44,7 @@ export async function generateBoolean(opts: {
   model: string;
   jd: string;
   signal?: AbortSignal;
+  onProgress?: (text: string) => void;
 }): Promise<GenerateResult> {
   const res = await fetch(`${BASE}/chat/completions`, {
     method: "POST",
@@ -59,34 +60,116 @@ export async function generateBoolean(opts: {
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt(opts.jd) },
       ],
-      response_format: { type: "json_object" },
-      temperature: 0.3,
+      temperature: 0.2,
+      stream: true,
     }),
   });
 
   if (!res.ok) {
     const txt = await res.text().catch(() => "");
-    throw new Error(`OpenRouter error ${res.status}: ${txt.slice(0, 240)}`);
+    let errorMsg = `OpenRouter error ${res.status}: ${txt.slice(0, 100)}`;
+    
+    if (res.status === 429) {
+      errorMsg = "You've reached your free daily rate limit for this model. Please try again later or select a different model.";
+    } else if (res.status === 401) {
+      errorMsg = "Invalid API key. Please check your OpenRouter API key.";
+    } else if (res.status === 402) {
+      errorMsg = "Insufficient credits on your OpenRouter account.";
+    } else if (res.status === 403) {
+      errorMsg = "Access denied or model blocked by OpenRouter policy.";
+    } else if (res.status === 529 || res.status === 502) {
+      errorMsg = "The AI model provider is currently overloaded or down. Please try another model.";
+    } else {
+      try {
+         const jsonErr = JSON.parse(txt);
+         if (jsonErr.error && jsonErr.error.message) {
+           errorMsg = jsonErr.error.message;
+         }
+      } catch(e) {}
+    }
+    throw new Error(errorMsg);
   }
-  const json = await res.json();
-  const content: string = json.choices?.[0]?.message?.content ?? "";
-  if (!content) throw new Error("Empty response from model.");
 
-  const parsed = parseLoose(content);
-  if (!parsed?.variants?.length) throw new Error("Model returned an unexpected shape.");
+  // Real-time rate limit tracking
+  const remReq = res.headers.get("x-ratelimit-remaining-requests");
+  const limitReq = res.headers.get("x-ratelimit-limit-requests");
+  if (remReq && limitReq) {
+    localStorage.setItem("or_rate_remaining", remReq);
+    localStorage.setItem("or_rate_limit", limitReq);
+    window.dispatchEvent(new Event("ratelimit_update"));
+  }
+
+  if (!res.body) throw new Error("Empty response stream from model.");
+  
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let content = "";
+  let buffer = "";
+  
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    
+    let boundary = buffer.indexOf("\n");
+    while (boundary !== -1) {
+      const line = buffer.slice(0, boundary).trim();
+      buffer = buffer.slice(boundary + 1);
+      
+      if (line.startsWith("data: ")) {
+        const dataStr = line.replace(/^data: /, "").trim();
+        if (dataStr === "[DONE]") break;
+        try {
+          const data = JSON.parse(dataStr);
+          const text = data.choices[0]?.delta?.content;
+          if (text) {
+            content += text;
+            if (opts.onProgress) opts.onProgress(content);
+          }
+        } catch (e) {
+          // Suppress parse failures on partial final lines
+        }
+      }
+      boundary = buffer.indexOf("\n");
+    }
+  }
+
+  const parsed = parseBlocks(content);
+  if (!parsed?.variants?.length) throw new Error("Model response failed to generate required data shape.");
   return parsed;
 }
 
-function parseLoose(s: string): GenerateResult | null {
+function parseBlocks(s: string): GenerateResult | null {
   try {
-    return JSON.parse(s);
+    // Helper to pull text between a tag [KEY] and the next bracket [ or EOF
+    const extractBlock = (key: string) => {
+      const regex = new RegExp(`\\[${key}\\]\\s*([\\s\\S]*?)(?=\\n\\[|$)`, 'i');
+      return s.match(regex)?.[1]?.trim() ?? "";
+    };
+
+    const b1 = extractBlock("BROAD");
+    const b2 = extractBlock("BALANCED");
+    const b3 = extractBlock("STRICT");
+
+    if (!b1 && !b2 && !b3) return null;
+
+    const parseList = (str: string) => 
+      str.split(',').map(t => t.trim().replace(/^["']+|["']+$/g, '')).filter(Boolean);
+
+    return {
+      variants: [
+        { label: "Broad", string: b1 },
+        { label: "Balanced", string: b2 },
+        { label: "Strict", string: b3 }
+      ].filter(v => v.string),
+      rationale: extractBlock("RATIONALE"),
+      extracted: {
+        titles: parseList(extractBlock("TITLES")),
+        skills: parseList(extractBlock("SKILLS")),
+        exclusions: parseList(extractBlock("EXCLUSIONS"))
+      }
+    };
   } catch {
-    const m = s.match(/\{[\s\S]*\}/);
-    if (!m) return null;
-    try {
-      return JSON.parse(m[0]);
-    } catch {
-      return null;
-    }
+    return null;
   }
 }
