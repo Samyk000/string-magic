@@ -1,5 +1,12 @@
-import { Sparkles, KeyRound, Activity } from "lucide-react";
+import { Sparkles, KeyRound, Activity, Info, Trophy } from "lucide-react";
 import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type Props = {
   onOpenKey: () => void;
@@ -14,7 +21,6 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
 
   useEffect(() => {
     const updateLimit = () => {
-      // 1. Check if OpenRouter provided live headers
       const hr = localStorage.getItem("or_rate_remaining");
       const hl = localStorage.getItem("or_rate_limit");
       if (hr && hl) {
@@ -22,7 +28,6 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
         return;
       }
       
-      // 2. Fallback: Local deterministic tracking (50 per day)
       const date = new Date().toLocaleDateString();
       const storedDate = localStorage.getItem("local_rate_date");
       if (storedDate !== date) {
@@ -41,14 +46,79 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
   return (
     <header className="sticky top-0 z-40 w-full bg-background/95 backdrop-blur-xl border-b border-border">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-2 px-4 md:px-6">
-        <a href="#top" className="flex shrink-0 items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Sparkles className="h-5 w-5" fill="currentColor" />
-          </span>
-          <span className="text-base font-bold tracking-tight text-foreground">
-            String Magic
-          </span>
-        </a>
+        <div className="flex items-center gap-8">
+          <a href="#top" className="flex shrink-0 items-center gap-2">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Sparkles className="h-5 w-5" fill="currentColor" />
+            </span>
+            <span className="text-base font-bold tracking-tight text-foreground">
+              String Magic
+            </span>
+          </a>
+
+          {/* Left nav items */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
+                  <Info className="h-3.5 w-3.5 text-primary/60" />
+                  How it works
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
+                <DialogHeader>
+                  <DialogTitle className="text-[22px] font-bold flex items-center gap-2">
+                    <Info className="h-6 w-6 text-primary" /> How it works
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 mt-4 text-sm text-foreground/80 leading-relaxed">
+                  <p>String Magic pairs OpenRouter's API with optimized architecture to produce instant Boolean strings.</p>
+                  <ol className="space-y-3 list-decimal pl-4 font-medium text-foreground">
+                    <li>Link your local OpenRouter key.</li>
+                    <li>Paste any job description text.</li>
+                    <li>AI extracts precise titles, skills, and blockers.</li>
+                    <li>Copy ready-to-search Boolean variants immediately.</li>
+                  </ol>
+                  <div className="bg-surface-soft rounded-xl p-4 text-xs text-muted-foreground font-mono mt-2 border border-border/50">
+                    Fully privacy-respecting. No servers. No logging.
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="text-[13px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
+                  <Trophy className="h-3.5 w-3.5 text-primary/60" />
+                  Top Models
+                </button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
+                <DialogHeader>
+                  <DialogTitle className="text-[22px] font-bold flex items-center gap-2">
+                    <Trophy className="h-6 w-6 text-primary" /> Recommended Models
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col gap-2.5 mt-4">
+                  {[
+                    { name: "Baidu Qianfan: CoBuddy", desc: "Optimized" },
+                    { name: "Poolside: Laguna M.1", desc: "Fast & Free" },
+                    { name: "Arcee AI: Trinity Large", desc: "High Reasoning" },
+                    { name: "MiniMax: MiniMax M2.5", desc: "Free Tier" },
+                  ].map((m, i) => (
+                    <div key={i} className="flex items-center justify-between bg-card border border-hairline rounded-xl px-4 py-3 shadow-sm">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-[14px] text-foreground">{m.name}</span>
+                        <span className="text-xs text-muted-foreground">{m.desc}</span>
+                      </div>
+                      <span className="text-primary/20 font-mono text-[20px] font-black leading-none">#{i + 1}</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
+          </nav>
+        </div>
 
         <div className="flex min-w-0 items-center gap-4">
           {rateLimit && (

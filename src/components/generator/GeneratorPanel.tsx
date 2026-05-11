@@ -166,47 +166,59 @@ export function GeneratorPanel({
       )}
 
       <div className="w-full flex flex-col min-w-0">
-        {showResults && (
-        <div className="mb-4 flex justify-start animate-fade-in">
+      
+      {/* Actions outside the box at the top */}
+      {showResults && (
+        <div className="mb-4 flex items-center justify-between w-full animate-fade-in">
+          <Button
+            onClick={() => setResult(null)}
+            variant="ghost"
+            className="group h-9 px-3 -ml-3 hover:bg-surface-soft text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1 text-primary/70" />
+            Back to edit
+          </Button>
           <Button
             onClick={reset}
             variant="ghost"
-            className="group h-10 px-0 hover:bg-transparent text-muted-foreground hover:text-foreground transition-colors"
+            className="group h-9 px-4 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors text-sm font-bold"
           >
-            <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            Back to home
+            Create another
+            <Sparkles className="ml-2 h-4 w-4" />
           </Button>
         </div>
       )}
 
       {/* Main dashboard card */}
       <div className="relative overflow-hidden rounded-lg bg-card border border-hairline shadow-[0_0_0_1px_rgba(255,255,255,0.02)_inset]">
-        {/* Top bar */}
-        <div className="flex items-center justify-between gap-3 px-6 py-4">
-          <span className="text-xs font-semibold text-muted-foreground">
-            {showResults ? "Results · 3 strings" : loading ? "Working" : "Job description"}
-          </span>
-          <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-            {!showResults && !loading && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setJd(SAMPLES[sampleIdx]);
-                    setSampleIdx((p) => (p + 1) % SAMPLES.length);
-                  }}
-                  className="text-foreground hover:underline"
-                >
-                  Try sample
-                </button>
-                <span className="opacity-40">·</span>
-                <span>
-                  {jd.length}/{max}
-                </span>
-              </>
-            )}
+        {/* Top bar (Hidden when results are showing) */}
+        {!showResults && (
+          <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-border/50">
+            <span className="text-xs font-semibold text-muted-foreground">
+              {loading ? "Working" : "Job description"}
+            </span>
+            <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+              {!loading && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setJd(SAMPLES[sampleIdx]);
+                      setSampleIdx((p) => (p + 1) % SAMPLES.length);
+                    }}
+                    className="text-foreground hover:underline transition-all"
+                  >
+                    Try sample
+                  </button>
+                  <span className="opacity-40">·</span>
+                  <span>
+                    {jd.length}/{max}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Body — swaps between input / loading / results */}
         <div className="relative">
@@ -215,15 +227,36 @@ export function GeneratorPanel({
               <LoadingState streamLength={streamLength} />
             </div>
           ) : showResults ? (
-            <div className="animate-fade-in">
-              {result!.rationale && (
-                <div className="border-b border-border/60 bg-surface-soft/40 p-4 text-[13px] leading-relaxed text-muted-foreground">
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-foreground/70 block mb-1">
-                    Rationale
-                  </span>
-                  {result!.rationale}
+            <div className="animate-fade-in pt-6 pb-2">
+              {/* Extracted Data at the TOP - Minimal Organized Boxes */}
+              {result?.extracted && (
+                <div className="px-6 mb-6">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    {(["titles", "skills", "exclusions"] as const).map((k) => (
+                      <div key={k} className="rounded-xl border border-border/50 bg-surface/50 p-4 shadow-sm flex flex-col gap-3">
+                        <div className="font-mono text-[11px] uppercase tracking-widest text-primary/80 font-bold flex items-center gap-1.5">
+                          {k}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {(result.extracted![k] ?? []).map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-md bg-background border border-hairline px-2.5 py-1 font-mono text-[12px] text-foreground transition-colors hover:border-primary/40 shadow-sm"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                          {!(result.extracted![k] ?? []).length && (
+                            <span className="text-xs text-muted-foreground opacity-50">—</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
+
+              {/* Variants */}
               {result!.variants.map((v, i) => (
                 <ResultRow key={v.label + i} index={i} label={v.label} value={v.string} />
               ))}
@@ -232,20 +265,20 @@ export function GeneratorPanel({
             <textarea
               value={jd}
               onChange={(e) => setJd(e.target.value.slice(0, max))}
-              placeholder="Paste a job description here…"
+              placeholder="Drop any job description here. I'll strip the noise and engineer perfect, production-ready Boolean strings for you in seconds…"
               rows={12}
-              className="result-scroll w-full resize-none border-0 bg-transparent px-6 pb-6 text-base leading-[1.4] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-0"
+              className="result-scroll w-full resize-none border-0 bg-transparent px-6 py-5 text-base leading-[1.6] text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-0 transition-all"
             />
           )}
         </div>
 
         {/* Footer row */}
         {!showResults && (
-          <div className="flex items-center justify-end gap-3 px-6 pb-6">
+          <div className="flex items-center justify-end gap-3 px-6 pb-6 pt-2">
             {loading ? (
               <Button
                 onClick={cancel}
-                className="h-10 rounded-md bg-secondary hover:bg-muted text-foreground px-5 text-sm font-semibold shadow-none"
+                className="h-10 rounded-md bg-secondary hover:bg-muted text-foreground px-5 text-sm font-semibold shadow-none transition-colors"
               >
                 <X className="mr-1.5 h-4 w-4" />
                 Cancel
@@ -253,48 +286,15 @@ export function GeneratorPanel({
             ) : (
               <Button
                 onClick={generate}
-                className="h-10 rounded-md bg-primary hover:bg-primary-pressed text-primary-foreground px-5 text-sm font-semibold transition-colors shadow-none"
+                className="h-10 rounded-md bg-primary hover:bg-primary-pressed text-primary-foreground px-6 text-sm font-bold transition-all shadow-none hover:shadow-[0_0_20px_rgba(250,255,105,0.2)]"
               >
-                <Sparkles className="mr-1.5 h-4 w-4" />
-                Generate
+                <Sparkles className="mr-2 h-4 w-4" />
+                Generate Strings
               </Button>
             )}
           </div>
         )}
       </div>
-
-      {/* Extras below results */}
-      {showResults && result?.extracted && (
-        <div className="mt-4 animate-fade-in space-y-3">
-          {result!.extracted && (
-            <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
-              {(["titles", "skills", "exclusions"] as const).map((k) => (
-                <div
-                  key={k}
-                  className="rounded-xl border border-border bg-surface-soft p-3"
-                >
-                  <div className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                    {k}
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {(result!.extracted![k] ?? []).map((t) => (
-                      <span
-                        key={t}
-                        className="rounded-md border border-border bg-surface px-1.5 py-0.5 font-mono text-[10.5px]"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                    {!(result!.extracted![k] ?? []).length && (
-                      <span className="text-xs text-muted-foreground">—</span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
       </div>
 
       {/* History Section */}

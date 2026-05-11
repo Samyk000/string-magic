@@ -22,9 +22,6 @@ Do not use JSON. Do not use code escaping. Output raw text exactly like this tem
 [STRICT]
 (boolean search here)
 
-[RATIONALE]
-(one short sentence)
-
 [TITLES]
 Job Title, Job Title
 
