@@ -8,24 +8,8 @@ export function Footer() {
           <Sparkles className="h-4 w-4 text-primary" fill="currentColor" />
           <span>String Magic © {new Date().getFullYear()}</span>
         </div>
-        <div className="flex items-center gap-6">
-          <a
-            href="https://openrouter.ai"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-foreground transition-colors"
-          >
-            OpenRouter
-          </a>
-          <a
-            href="https://openrouter.ai/keys"
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-foreground transition-colors"
-          >
-            API Keys
-          </a>
-          <span className="hidden sm:inline opacity-50">v1.0</span>
+        <div className="text-muted-foreground font-mono opacity-50 scale-90">
+          v1.0
         </div>
       </div>
     </footer>
