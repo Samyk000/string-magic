@@ -9,6 +9,15 @@ import { storage, type HistoryItem } from "@/lib/storage";
 import { generateBoolean, type GenerateResult } from "@/lib/openrouter";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const SAMPLES = [
   `Senior Backend Engineer (Remote, US)\n\nWe're hiring a Senior Backend Engineer to design and scale our payments platform. You'll own services in Go and Python, work with PostgreSQL and Kafka, and ship to AWS via Kubernetes.\n\nRequirements:\n- 5+ years building distributed systems in production\n- Strong with Go or Python; experience with gRPC and REST APIs\n- Deep PostgreSQL knowledge; comfortable with event streaming (Kafka)\n- AWS, Docker, Kubernetes\n- Bonus: fintech / payments experience (Stripe, Adyen)\n\nNot a fit: junior engineers, frontend-only backgrounds, agency-only experience.`,
@@ -40,6 +49,7 @@ export function GeneratorPanel({
   const [result, setResult] = useState<GenerateResult | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [sampleIdx, setSampleIdx] = useState(0);
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const max = 8000;
   const abortRef = useRef<AbortController | null>(null);
 
@@ -111,7 +121,7 @@ export function GeneratorPanel({
   const showResults = !!result && !loading;
 
   return (
-    <div id="generator" className={cn("relative", !showResults && "flex flex-col gap-10 lg:gap-14 items-center max-w-4xl mx-auto")}>
+    <div id="generator" className={cn("relative", !showResults && "grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center")}>
       <ApiKeyDialog
         open={keyDialogOpen}
         onOpenChange={setKeyDialogOpen}
@@ -129,15 +139,15 @@ export function GeneratorPanel({
       />
 
       {!showResults && (
-        <div className="flex flex-col pt-2 lg:pt-6 text-center items-center animate-fade-in w-full">
-          <h1 className="text-[44px] md:text-[56px] lg:text-[70px] leading-[1.1] tracking-[-1.2px] font-bold text-foreground mb-6 max-w-3xl">
-            Boolean strings, <br className="hidden sm:block" />
-            <span className="text-muted-foreground">in one click.</span>
+        <div className="flex flex-col text-left animate-fade-in w-full pb-8 lg:pb-0">
+          <h1 className="text-[56px] md:text-[72px] leading-[1.05] tracking-[-2.5px] font-bold text-foreground mb-6">
+            Boolean strings, <br />
+            <span className="text-primary">in one click.</span>
           </h1>
-          <p className="text-lg text-foreground mb-8 max-w-2xl leading-[1.5]">
-            Stop wrestling with complex search syntax. Paste any job description, and instantly get production-ready boolean strings built for high recall, precision, and perfect balance. The daily struggle of every recruiter, solved.
+          <p className="text-lg font-normal text-body mb-10 max-w-md leading-[1.55]">
+            Stop wrestling with complex search syntax. Paste any job description, and instantly get production-ready boolean strings built for high recall, precision, and perfect balance.
           </p>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center">
             <SetupModal onOpenKey={() => setKeyDialogOpen(true)} />
           </div>
         </div>
@@ -158,7 +168,7 @@ export function GeneratorPanel({
       )}
 
       {/* Main dashboard card */}
-      <div className="relative overflow-hidden rounded-2xl bg-card">
+      <div className="relative overflow-hidden rounded-lg bg-card border border-hairline shadow-[0_0_0_1px_rgba(255,255,255,0.02)_inset]">
         {/* Top bar */}
         <div className="flex items-center justify-between gap-3 px-6 py-4">
           <span className="text-xs font-semibold text-muted-foreground">
@@ -223,7 +233,7 @@ export function GeneratorPanel({
             {loading ? (
               <Button
                 onClick={cancel}
-                className="h-10 rounded-2xl bg-secondary hover:bg-[#c8c8c1] text-foreground px-5 text-sm font-bold shadow-none"
+                className="h-10 rounded-md bg-secondary hover:bg-muted text-foreground px-5 text-sm font-semibold shadow-none"
               >
                 <X className="mr-1.5 h-4 w-4" />
                 Cancel
@@ -231,7 +241,7 @@ export function GeneratorPanel({
             ) : (
               <Button
                 onClick={generate}
-                className="h-10 rounded-2xl bg-primary hover:bg-[#cc001f] text-primary-foreground px-5 text-sm font-bold transition-colors shadow-none"
+                className="h-10 rounded-md bg-primary hover:bg-primary-pressed text-primary-foreground px-5 text-sm font-semibold transition-colors shadow-none"
               >
                 <Sparkles className="mr-1.5 h-4 w-4" />
                 Generate
@@ -280,20 +290,47 @@ export function GeneratorPanel({
         <div className="col-span-1 lg:col-span-2 mt-4 lg:mt-8 animate-fade-in">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-[22px] font-bold tracking-tight text-foreground">Recent Searches</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                storage.clearHistory();
-                setHistory([]);
-                toast.success("History cleared");
-              }}
-              className="text-sm font-bold text-muted-foreground hover:text-destructive rounded-2xl"
-            >
-              Clear History
-            </Button>
+            <Dialog open={confirmClearOpen} onOpenChange={setConfirmClearOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm font-semibold text-muted-foreground hover:text-destructive rounded-md"
+                >
+                  Clear History
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-sm rounded-lg p-6 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
+                <DialogHeader>
+                  <DialogTitle className="text-[20px] font-bold tracking-[-0.3px]">Clear History?</DialogTitle>
+                  <DialogDescription className="text-[14px] text-body mt-2 font-[400]">
+                    This will permanently delete all your recent searches. This action cannot be undone.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="mt-4 flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setConfirmClearOpen(false)}
+                    className="rounded-md font-semibold text-muted-foreground hover:text-foreground"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      storage.clearHistory();
+                      setHistory([]);
+                      toast.success("History cleared");
+                      setConfirmClearOpen(false);
+                    }}
+                    className="rounded-md bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold shadow-none"
+                  >
+                    Yes, clear it
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
-          <div className="overflow-hidden rounded-2xl bg-card">
+          <div className="overflow-hidden rounded-lg bg-card border border-hairline shadow-[0_0_0_1px_rgba(255,255,255,0.02)_inset]">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead>

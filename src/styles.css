@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -57,79 +58,56 @@
   --color-chart-5: var(--chart-5);
 }
 
-:root {
-  --radius: 1rem;
+:root, .dark {
+  --radius: 0.5rem; /* 8px baseline */
 
-  /* Pinterest Chrome Palette */
-  --background: #ffffff;
-  --foreground: #000000;
-  --surface: #ffffff;
-  --surface-soft: #fbfbf9;
-  --card: #f6f6f3;
-  --card-foreground: #33332e;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
-  --primary: #e60023;
-  --primary-foreground: #ffffff;
-  --secondary: #e5e5e0;
-  --secondary-foreground: #000000;
-  --muted: #f6f6f3;
-  --muted-foreground: #62625b;
-  --accent: #fbfbf9;
-  --accent-foreground: #000000;
-  --destructive: #9e0a0a;
-  --destructive-foreground: #ffffff;
-  --border: #dadad3;
-  --input: #dadad3;
-  --ring: #435ee5;
-
-  /* Extended Pinterest Tokens */
-  --primary-pressed: #cc001f;
-  --secondary-pressed: #c8c8c1;
-  --ash: #91918c;
-  --ink-soft: #211922;
-
-  --accent-blue: #617bff;
-  --accent-violet: #7e238b;
-  --accent-green: #103c25;
-  --accent-amber: #c8c8c1;
-  --accent-rose: #e60023;
-}
-
-.dark {
-  /* Premium Charcoal Dark Mode with Pinterest Accents */
-  --background: #000000;
+  /* ClickHouse Canvas & Core */
+  --background: #0a0a0a;
   --foreground: #ffffff;
-  --surface: #111111;
-  --surface-soft: #181818;
-  --card: #181818;
-  --card-foreground: #f0f0f0;
-  --popover: #181818;
-  --popover-foreground: #ffffff;
-  --primary: #e60023;
-  --primary-foreground: #ffffff;
-  --secondary: #2b2b2b;
-  --secondary-foreground: #ffffff;
-  --muted: #2b2b2b;
-  --muted-foreground: #a1a1aa;
-  --accent: #181818;
-  --accent-foreground: #ffffff;
-  --destructive: #9e0a0a;
-  --destructive-foreground: #ffffff;
-  --border: #27272a;
-  --input: #27272a;
-  --ring: #435ee5;
   
-  --primary-pressed: #cc001f;
-  --secondary-pressed: #3f3f46;
-  --ash: #a1a1aa;
-  --ink-soft: #d4d4d8;
-
-  --accent-blue: #617bff;
-  --accent-violet: #7e238b;
-  --accent-green: #34d399; /* Adjusted for dark mode contrast */
-  --accent-amber: #27272a;
-  --accent-rose: #e60023;
+  --surface: #121212;
+  --surface-soft: #121212;
+  --card: #1a1a1a;
+  --card-foreground: #ffffff;
+  
+  --popover: #1a1a1a;
+  --popover-foreground: #ffffff;
+  
+  /* The Brand Voltage */
+  --primary: #faff69;
+  --primary-foreground: #0a0a0a;
+  --primary-pressed: #e6eb52;
+  --primary-disabled: #3a3a1f;
+  
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  
+  --muted: #121212;
+  --muted-foreground: #888888;
+  --muted-soft: #5a5a5a;
+  
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
+  
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  --border: #2a2a2a;
+  --input: #2a2a2a;
+  --ring: #faff69;
+  
+  --hairline: #2a2a2a;
+  --hairline-strong: #3a3a3a;
+  
+  --body: #cccccc;
+  --body-strong: #e6e6e6;
+  
+  /* Semantic Accents */
+  --accent-emerald: #22c55e;
+  --accent-rose: #ef4444;
+  --accent-blue: #3b82f6;
+  --accent-yellow: #faff69;
+  --accent-violet: #8b5cf6;
 }
 
 @layer base {

@@ -37,6 +37,7 @@ export function ModelSelect({ apiKey, value, onChange, compact }: Props) {
       setModels(list);
       if (!value && list.length) {
         const preferred =
+          list.find((m) => m.id === "baidu/cobuddy:free") ??
           list.find((m) => /llama-3\.1.*free/i.test(m.id)) ??
           list.find((m) => /deepseek.*free/i.test(m.id)) ??
           list[0];
@@ -83,7 +84,7 @@ export function ModelSelect({ apiKey, value, onChange, compact }: Props) {
           <ChevronsUpDown className="ml-0.5 h-3 w-3 shrink-0 opacity-50" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[min(480px,92vw)] p-0" align="end">
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 pointer-events-auto" align="start">
         <Command>
           <div className="flex items-center justify-between gap-2 border-b border-border/60 px-2">
             <CommandInput
@@ -104,7 +105,7 @@ export function ModelSelect({ apiKey, value, onChange, compact }: Props) {
               )}
             </button>
           </div>
-          <CommandList>
+          <CommandList className="max-h-[300px] overflow-y-auto overscroll-contain pointer-events-auto">
             <CommandEmpty>No free models found.</CommandEmpty>
             <CommandGroup>
               {models.map((m) => (

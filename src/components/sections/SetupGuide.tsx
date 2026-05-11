@@ -39,24 +39,24 @@ export function SetupModal({ onOpenKey }: Props) {
       <DialogTrigger asChild>
         <button
           type="button"
-          className="inline-flex h-8 items-center justify-center rounded-full bg-secondary px-4 font-mono text-[10px] font-bold uppercase tracking-widest text-foreground hover:bg-[#c8c8c1] transition-colors"
+          className="inline-flex h-8 items-center justify-center rounded-full bg-primary px-5 font-mono text-[12px] font-[600] uppercase tracking-[1.5px] text-primary-foreground hover:bg-primary-pressed transition-colors shadow-[0_0_0_1px_rgba(255,255,255,0.05)_inset]"
         >
           Setup · 60 seconds
         </button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md rounded-[32px] p-8 border-0 bg-background shadow-[0_16px_32px_rgba(0,0,0,0.12)]">
+      <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
         <DialogHeader>
-          <DialogTitle className="text-[22px] font-bold">Setup · 60 seconds</DialogTitle>
-          <DialogDescription className="text-base text-foreground mt-2">
+          <DialogTitle className="text-[24px] font-bold tracking-[-0.3px]">Setup · 60 seconds</DialogTitle>
+          <DialogDescription className="text-[16px] text-body mt-2 font-[400]">
             Bring your own key to use free AI models securely.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3 border-t border-border/60 pt-4 mt-2">
+        <div className="flex flex-col gap-3 border-t border-hairline pt-6 mt-2">
           {STEPS.map((s) => (
             <div
               key={s.n}
-              className="flex items-start gap-4 rounded-2xl bg-card px-4 py-4"
+              className="flex items-start gap-4 rounded-lg bg-card border border-hairline px-4 py-4"
             >
               <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-xs font-bold text-background shadow-sm">
                 {s.n}

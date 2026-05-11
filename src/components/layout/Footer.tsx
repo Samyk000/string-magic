@@ -24,7 +24,7 @@ export function Footer() {
                 How this works
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-[32px] p-8 border-0 bg-background shadow-[0_16px_32px_rgba(0,0,0,0.12)]">
+            <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
               <DialogHeader>
                 <DialogTitle className="text-[22px] font-bold flex items-center gap-2">
                   <Info className="h-6 w-6 text-primary" /> How it works
@@ -52,7 +52,7 @@ export function Footer() {
                 Best Free Models
               </button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md rounded-[32px] p-8 border-0 bg-background shadow-[0_16px_32px_rgba(0,0,0,0.12)]">
+            <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline bg-surface shadow-[0_16px_32px_rgba(0,0,0,0.4)]">
               <DialogHeader>
                 <DialogTitle className="text-[22px] font-bold flex items-center gap-2">
                   <Trophy className="h-6 w-6 text-primary" /> Top Free Models

@@ -29,7 +29,7 @@ function Index() {
   useReveal();
 
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen flex flex-col bg-background">
       <Header
         onOpenKey={() => setKeyDialogOpen(true)}
         hasKey={!!apiKey}
@@ -38,7 +38,7 @@ function Index() {
         onModel={onModel}
       />
 
-      <main className="pb-16">
+      <main className="flex-1 pb-16">
         <section
           id="top"
           className="mx-auto w-full max-w-7xl px-4 md:px-6 pt-16"

@@ -1,4 +1,3 @@
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Sparkles, KeyRound } from "lucide-react";
 
 type Props = {
@@ -37,7 +36,6 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
               {hasKey ? "Free API key" : "Set Free API key"}
             </span>
           </button>
-          <ThemeToggle />
         </div>
       </div>
     </header>

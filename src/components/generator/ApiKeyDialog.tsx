@@ -16,6 +16,7 @@ import { ModelSelect } from "./ModelSelect";
 
 type Props = {
   open: boolean;
+  onOpenChange: (open: boolean) => void;
   initialKey: string;
   onSave: (key: string) => void;
   onClear: () => void;
@@ -56,10 +57,10 @@ export function ApiKeyDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-[32px] p-8 border-0 shadow-[0_16px_32px_rgba(0,0,0,0.12)] bg-background">
+      <DialogContent className="sm:max-w-md rounded-lg p-8 border border-hairline shadow-[0_16px_32px_rgba(0,0,0,0.4)] bg-surface">
         <DialogHeader>
-          <DialogTitle className="text-[22px] font-bold">API Configuration</DialogTitle>
-          <DialogDescription className="text-base text-foreground mt-2">
+          <DialogTitle className="text-[24px] font-bold tracking-[-0.3px]">API Configuration</DialogTitle>
+          <DialogDescription className="text-[16px] text-body mt-2 font-[400]">
             Stored only in your browser's localStorage. Never sent to our
             servers.
           </DialogDescription>
@@ -97,7 +98,7 @@ export function ApiKeyDialog({
             <ModelSelect apiKey={val || initialKey} value={model} onChange={onModel} />
           </div>
 
-          <div className="rounded-2xl border border-border bg-surface-soft p-4 mt-2 text-[13px] text-muted-foreground leading-relaxed">
+          <div className="rounded-lg border border-hairline bg-card p-4 mt-2 text-[13px] text-muted-foreground leading-relaxed">
             Don't have an account?{" "}
             <a
               href="https://openrouter.ai/keys"
@@ -122,14 +123,14 @@ export function ApiKeyDialog({
                 toast.success("Key removed.");
                 onOpenChange(false);
               }}
-              className="text-muted-foreground hover:text-destructive h-10 px-4 rounded-2xl font-bold"
+              className="text-muted-foreground hover:text-destructive h-10 px-4 rounded-md font-[600]"
             >
               <Trash2 className="mr-2 h-4 w-4" /> Remove Key
             </Button>
           ) : (
             <div />
           )}
-          <Button onClick={save} className="h-10 px-6 rounded-2xl bg-primary hover:bg-[#cc001f] text-primary-foreground font-bold shadow-none">
+          <Button onClick={save} className="h-10 px-6 rounded-md bg-primary hover:bg-primary-pressed text-primary-foreground font-[600] shadow-none">
             Save Configuration
           </Button>
         </DialogFooter>
