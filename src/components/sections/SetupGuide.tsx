@@ -1,6 +1,12 @@
-import { useState } from "react";
-import { ChevronDown, ExternalLink, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ExternalLink, ArrowRight } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type Props = { onOpenKey: () => void };
 
@@ -27,79 +33,66 @@ const STEPS = [
   },
 ];
 
-export function SetupGuide({ onOpenKey }: Props) {
-  const [open, setOpen] = useState(false);
-
+export function SetupModal({ onOpenKey }: Props) {
   return (
-    <section id="setup" className="reveal mx-auto mt-10 w-full max-w-5xl px-4">
-      <div className="overflow-hidden rounded-xl border border-border bg-surface/60 backdrop-blur">
+    <Dialog>
+      <DialogTrigger asChild>
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-surface-soft/60"
+          className="inline-flex items-center justify-center rounded-lg border border-foreground/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-foreground/80 transition-all duration-500 hover:border-foreground/80 hover:text-foreground hover:bg-foreground/5 animate-[pulse_3s_cubic-bezier(0.4,0,0.6,1)_infinite]"
         >
-          <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            Setup · 60 seconds
-          </span>
-          <ChevronDown
-            className={cn(
-              "h-3.5 w-3.5 text-muted-foreground transition-transform duration-300",
-              open && "rotate-180",
-            )}
-          />
+          Setup · 60 seconds
         </button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Setup · 60 seconds</DialogTitle>
+          <DialogDescription>
+            Bring your own key to use free AI models securely.
+          </DialogDescription>
+        </DialogHeader>
 
-        <div
-          className={cn(
-            "grid transition-[grid-template-rows] duration-300 ease-out",
-            open ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-          )}
-        >
-          <div className="overflow-hidden">
-            <div className="grid grid-cols-1 gap-2 border-t border-border/60 p-3 sm:grid-cols-3">
-              {STEPS.map((s) => (
-                <div
-                  key={s.n}
-                  className="flex items-start gap-3 rounded-lg border border-border/70 bg-surface px-3 py-2.5"
-                >
-                  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-[10px] font-bold text-background">
-                    {s.n}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-semibold leading-tight">
-                      {s.title}
-                    </div>
-                    <div className="mt-0.5 text-xs leading-snug text-muted-foreground">
-                      {s.desc}
-                    </div>
-                    {s.href && (
-                      <a
-                        href={s.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-foreground/80 underline-offset-2 hover:underline"
-                      >
-                        {s.cta}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    )}
-                    {s.action && (
-                      <button
-                        onClick={onOpenKey}
-                        className="mt-1.5 inline-flex items-center gap-1 font-mono text-[10px] text-foreground/80 underline-offset-2 hover:underline"
-                      >
-                        Open dialog
-                        <ArrowRight className="h-3 w-3" />
-                      </button>
-                    )}
-                  </div>
+        <div className="flex flex-col gap-3 border-t border-border/60 pt-4 mt-2">
+          {STEPS.map((s) => (
+            <div
+              key={s.n}
+              className="flex items-start gap-4 rounded-xl border border-border/50 bg-surface-soft/50 px-4 py-3.5 transition-colors hover:bg-surface-soft"
+            >
+              <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-foreground font-mono text-xs font-bold text-background shadow-sm">
+                {s.n}
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="text-[15px] font-semibold tracking-tight text-foreground">
+                  {s.title}
                 </div>
-              ))}
+                <div className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+                  {s.desc}
+                </div>
+                {s.href && (
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-foreground/80 underline-offset-4 hover:text-foreground hover:underline"
+                  >
+                    {s.cta}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
+                {s.action && (
+                  <button
+                    onClick={onOpenKey}
+                    className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[11px] font-medium text-foreground/80 underline-offset-4 hover:text-foreground hover:underline"
+                  >
+                    Open dialog
+                    <ArrowRight className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </section>
+      </DialogContent>
+    </Dialog>
   );
 }

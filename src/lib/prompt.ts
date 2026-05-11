@@ -1,35 +1,23 @@
 export const VARIANT_LABELS = ["Broad", "Balanced", "Strict"] as const;
 export type VariantLabel = (typeof VARIANT_LABELS)[number];
 
-export const SYSTEM_PROMPT = `You are an expert technical recruiter and Boolean search architect. Convert a job description into THREE syntactically valid Boolean search strings that are platform-agnostic and work across LinkedIn Recruiter, Indeed, GitHub, Google X-Ray, and most ATS sourcing tools.
+export const SYSTEM_PROMPT = `Expert Boolean search architect. Convert a job description into 3 platform-agnostic Boolean search strings (LinkedIn Recruiter, Indeed, GitHub, Google X-Ray, ATS compatible).
 
-Universal rules:
-- Use ONLY uppercase operators: AND, OR, NOT.
-- Wrap every multi-word term in straight double quotes.
-- Use parentheses for OR groups. Every opening paren must be closed.
-- No platform-specific operators (no site:, intitle:, language:, title:, etc.).
-- No markdown, no commentary inside "string" — pure Boolean only.
-- Do not invent skills not implied by the JD. Use synonyms / abbreviations grouped with OR.
+Rules:
+- Operators: AND, OR, NOT (uppercase only).
+- Multi-word terms in straight double quotes.
+- Parentheses for OR groups; every open paren must close.
+- No site:, intitle:, language:, title: or platform-specific operators.
+- No markdown or commentary inside "string" values — pure Boolean only.
+- Only skills implied by the JD. Group synonyms/abbreviations with OR.
 
-Three required variants (in this order):
-1. "Broad"    — high recall. Loose synonyms, fewer ANDs, lighter exclusions.
-2. "Balanced" — production default. Core stack ANDed, common synonyms, sensible exclusions.
-3. "Strict"   — high precision. All must-haves ANDed, tight title list, strong exclusions.
+Variants (this order):
+1. Broad — high recall, loose synonyms, fewer ANDs, light exclusions.
+2. Balanced — core stack ANDed, common synonyms, sensible exclusions.
+3. Strict — all must-haves ANDed, tight titles, strong exclusions.
 
-Respond with a single JSON object of this exact shape:
-{
-  "variants": [
-    { "label": "Broad",    "string": "..." },
-    { "label": "Balanced", "string": "..." },
-    { "label": "Strict",   "string": "..." }
-  ],
-  "rationale": "1-2 sentences on the approach",
-  "extracted": {
-    "titles":     ["..."],
-    "skills":     ["..."],
-    "exclusions": ["..."]
-  }
-}`;
+Respond ONLY with JSON, no other text:
+{"variants":[{"label":"Broad","string":"..."},{"label":"Balanced","string":"..."},{"label":"Strict","string":"..."}],"rationale":"one sentence","extracted":{"titles":["..."],"skills":["..."],"exclusions":["..."]}}`;
 
 export function userPrompt(jd: string) {
   return `Job description:

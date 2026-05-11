@@ -60,7 +60,7 @@ export async function generateBoolean(opts: {
         { role: "user", content: userPrompt(opts.jd) },
       ],
       response_format: { type: "json_object" },
-      temperature: 0.4,
+      temperature: 0.3,
     }),
   });
 

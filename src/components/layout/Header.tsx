@@ -13,7 +13,7 @@ type Props = {
 export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/75 backdrop-blur-xl">
-      <div className="mx-auto flex h-12 w-full max-w-7xl items-center justify-between gap-2 px-4">
+      <div className="mx-auto flex h-12 w-full max-w-screen-2xl items-center justify-between gap-2 px-4 md:px-8">
         <a href="#top" className="flex shrink-0 items-center gap-2">
           <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-border bg-surface">
             <Sparkles className="h-3 w-3" />
@@ -37,7 +37,7 @@ export function Header({ onOpenKey, hasKey, apiKey, model, onModel }: Props) {
           >
             <KeyRound className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">
-              {hasKey ? "API key" : "Set API key"}
+              {hasKey ? "Free API key" : "Set Free API key"}
             </span>
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"

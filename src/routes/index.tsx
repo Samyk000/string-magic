@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { StructuralBackground } from "@/components/layout/StructuralBackground";
 import { GeneratorPanel } from "@/components/generator/GeneratorPanel";
-import { SetupGuide } from "@/components/sections/SetupGuide";
+
 import { storage } from "@/lib/storage";
 import { useReveal } from "@/lib/reveal";
 
@@ -43,15 +43,8 @@ function Index() {
       <main className="pb-16">
         <section
           id="top"
-          className="mx-auto w-full max-w-5xl px-4 pt-8 md:pt-12"
+          className="mx-auto w-full max-w-screen-2xl px-4 md:px-8 pt-8 md:pt-12"
         >
-          <div className="reveal mb-6 text-center">
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
-              Boolean strings,{" "}
-              <span className="text-muted-foreground">in one click.</span>
-            </h1>
-          </div>
-
           <div className="reveal">
             <GeneratorPanel
               apiKey={apiKey}
@@ -63,7 +56,7 @@ function Index() {
           </div>
         </section>
 
-        <SetupGuide onOpenKey={() => setKeyDialogOpen(true)} />
+
       </main>
 
       <Footer />
