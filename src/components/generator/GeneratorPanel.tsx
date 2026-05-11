@@ -5,6 +5,7 @@ import { ApiKeyDialog } from "./ApiKeyDialog";
 import { LoadingState } from "./LoadingState";
 import { ResultRow } from "./ResultCard";
 import { SetupModal } from "@/components/sections/SetupGuide";
+import { BackgroundParticles } from "./BackgroundParticles";
 import { storage, type HistoryItem } from "@/lib/storage";
 import { generateBoolean, type GenerateResult } from "@/lib/openrouter";
 import { toast } from "sonner";
@@ -134,6 +135,7 @@ export function GeneratorPanel({
 
   return (
     <div id="generator" className={cn("relative", !showResults && "grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center")}>
+      {!showResults && <BackgroundParticles />}
       <ApiKeyDialog
         open={keyDialogOpen}
         onOpenChange={setKeyDialogOpen}
