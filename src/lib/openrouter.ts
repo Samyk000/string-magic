@@ -12,7 +12,6 @@ export type ORModel = {
 export type Variant = { label: string; string: string };
 export type GenerateResult = {
   variants: Variant[];
-  rationale: string;
   extracted: { titles: string[]; skills: string[]; exclusions: string[] };
 };
 
@@ -60,7 +59,8 @@ export async function generateBoolean(opts: {
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt(opts.jd) },
       ],
-      temperature: 0.2,
+      temperature: 0.3,
+      max_tokens: 4096,
       stream: true,
     }),
   });
@@ -135,16 +135,24 @@ export async function generateBoolean(opts: {
   }
 
   const parsed = parseBlocks(content);
-  if (!parsed?.variants?.length) throw new Error("Model response failed to generate required data shape.");
+  if (!parsed?.variants?.length) {
+    // Debug: log raw content to help diagnose
+    console.warn("[StringMagic] Failed to parse model output:", content.slice(0, 500));
+    throw new Error("Model returned an unexpected format. Please try again or select a different model.");
+  }
   return parsed;
 }
 
 function parseBlocks(s: string): GenerateResult | null {
   try {
-    // Helper to pull text between a tag [KEY] and the next bracket [ or EOF
+    // Strip any markdown code fences some models wrap output in
+    const cleaned = s.replace(/^```[\s\S]*?\n/m, '').replace(/\n```$/m, '').trim();
+
     const extractBlock = (key: string) => {
-      const regex = new RegExp(`\\[${key}\\]\\s*([\\s\\S]*?)(?=\\n\\[|$)`, 'i');
-      return s.match(regex)?.[1]?.trim() ?? "";
+      // Try strict match first: [KEY] ... [NEXT_KEY]
+      const strict = new RegExp(`\\[${key}\\]\\s*\\n?([\\s\\S]*?)(?=\\n\\s*\\[(?:BROAD|BALANCED|STRICT|TITLES|SKILLS|EXCLUSIONS)\\]|$)`, 'i');
+      const m = cleaned.match(strict);
+      return m?.[1]?.trim() ?? "";
     };
 
     const b1 = extractBlock("BROAD");
@@ -154,15 +162,14 @@ function parseBlocks(s: string): GenerateResult | null {
     if (!b1 && !b2 && !b3) return null;
 
     const parseList = (str: string) => 
-      str.split(',').map(t => t.trim().replace(/^["']+|["']+$/g, '')).filter(Boolean);
+      str.split(',').map(t => t.trim().replace(/^["'`]+|["'`]+$/g, '')).filter(Boolean);
 
     return {
       variants: [
-        { label: "Broad", string: b1 },
+        { label: "Strict", string: b3 },
         { label: "Balanced", string: b2 },
-        { label: "Strict", string: b3 }
+        { label: "Broad", string: b1 }
       ].filter(v => v.string),
-      rationale: extractBlock("RATIONALE"),
       extracted: {
         titles: parseList(extractBlock("TITLES")),
         skills: parseList(extractBlock("SKILLS")),
